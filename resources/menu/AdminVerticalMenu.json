@@ -1,0 +1,67 @@
+{
+    "menu": [
+      {
+        "url": "/",
+        "name": "Dashboard",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "dashboard"
+      },
+      {
+        "url": "/karyawan",
+        "name": "Karyawan",
+        "icon": "menu-icon tf-icons bx bx-user-pin",
+        "slug": "kyw"
+      },
+      {
+        "menuHeader": "Tiket"
+      },
+      {
+        "url" : "/psbtiket",
+        "name": "Tiket Pasang Baru",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "psb"
+      },
+      {
+        "url" : "/ggntiket",
+        "name": "Tiket Gangguan",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "ggn"
+      },
+      {
+        "url" : "/mtntiket",
+        "name": "Tiket Maintenance",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "mtn"
+      },
+      {
+        "menuHeader" : "Team"
+      },
+      {
+        "url": "/tl",
+        "name": "Daftar Team",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "tl"
+      },
+      {
+        "url":"/td",
+        "name": "Anggota Team",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "td"
+      },
+      {
+        "menuHeader" : "Rekap"
+      },
+      {
+        "url" : "/tiket_team",
+        "name": "Rekap Tiket",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "tiket"
+      },
+      {
+        "url" : "/rba",
+        "name": "Rekap Berita Acara",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "rba"
+      }
+    ]
+  }

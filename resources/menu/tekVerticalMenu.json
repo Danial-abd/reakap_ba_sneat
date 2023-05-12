@@ -1,0 +1,41 @@
+{
+    "menu": [
+      {
+        "url": "/",
+        "name": "Dashboard",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "dashboard"
+      },
+      {
+        "menuHeader" : "Berita Acara"
+      },
+      {
+        "url" : "/ba",
+        "name": "Daftar Berita Acara",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "ba"
+      },
+      {
+        "url" : "/ba-tambah",
+        "name": "Input Berita Acara",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "tbh.ba"
+      },
+      {
+        "menuHeader" : "Rekap"
+      },
+      {
+        "url" : "/tiket_team",
+        "name": "Rekap Tiket",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "tiket"
+      },
+      {
+        "url" : "/rba",
+        "name": "Rekap Berita Acara",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "rba"
+      }
+    ]
+  }
+      

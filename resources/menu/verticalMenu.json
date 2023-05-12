@@ -1,0 +1,72 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "dashboard"
+    },
+    {
+      "url": "/karyawan",
+      "name": "Karyawan",
+      "icon": "menu-icon tf-icons bx bx-user-pin",
+      "slug": "kyw"
+    },
+    {
+      "url": "/page/user",
+      "name": "User",
+      "icon": "menu-icon tf-icons bx bx-tada-hover bx-user-circle",
+      "slug": "usr"
+    },
+    {
+      "url": "/jd",
+      "name": "Jobdesk",
+      "icon": "menu-icon tf-icons bx bx-briefcase",
+      "slug": "jd"
+    },
+    {
+      "url": "/jtiket",
+      "name": "Tiket Pekerjaan",
+      "icon": "menu-icon tf-icons bx bx-briefcase",
+      "slug": "jt"
+    },
+    {
+      "menuHeader": "Tiket"
+    },
+    {
+      "url" : "/psbtiket",
+      "name": "Tiket Pasang Baru",
+      "icon": "menu-icon tf-icons bx",
+      "slug": "psb"
+    },
+    {
+      "url" : "/ggntiket",
+      "name": "Tiket Gangguan",
+      "icon": "menu-icon tf-icons bx",
+      "slug": "ggn"
+    },
+    {
+      "url" : "/mtntiket",
+      "name": "Tiket Maintenance",
+      "icon": "menu-icon tf-icons bx",
+      "slug": "mtn"
+    },
+
+    {
+      "menuHeader" : "Rekap"
+    },
+    {
+      "url" : "/tiket_team",
+      "name": "Rekap Tiket",
+      "icon": "menu-icon tf-icons bx",
+      "slug": "tiket"
+    },
+    {
+      "url" : "/rba",
+      "name": "Rekap Berita Acara",
+      "icon": "menu-icon tf-icons bx",
+      "slug": "rba"
+    }
+  ]
+}
+    
