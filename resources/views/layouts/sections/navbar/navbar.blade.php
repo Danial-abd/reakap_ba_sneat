@@ -5,6 +5,7 @@
 @endphp
 
 <!-- Navbar -->
+<div id="lo"></div>
 @if (isset($navbarDetached) && $navbarDetached == 'navbar-detached')
     <nav class="layout-navbar {{ $containerNav }} navbar navbar-expand-xl {{ $navbarDetached }} align-items-center bg-navbar-theme"
         id="layout-navbar">
@@ -34,6 +35,7 @@
             <i class="bx bx-menu bx-sm"></i>
         </a>
     </div>
+    
 @endif
 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
     <div class="navbar-nav">
@@ -62,7 +64,7 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <span class="fw-semibold d-block">{{ auth()->user()->karyawan->nama }}</span>
-                                    <small class="text-muted">{{ auth()->user()->jobdesk->jobdesk }} {{ auth()->user()->jobdesk->detail_kerja ?? ''}}</small>
+                                    <small class="text-muted">{{ auth()->user()->jobdesk->jobdesk }} {{ auth()->user()->jobdesk->jenistiket->nama_tiket ?? ''}}</small>
                                 </div>
                                 <div class="flex-grow-1">
                                   <small class="text-muted">{{  auth()->user()->teamdetail->teamlist->list_tim ?? ''}}</small>
@@ -102,6 +104,7 @@
         <!--/ User -->
     </ul>
 </div>
+
 
 @if (!isset($navbarDetached))
     </div>

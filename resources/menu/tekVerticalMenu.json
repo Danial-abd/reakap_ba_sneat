@@ -22,6 +22,15 @@
         "slug": "tbh.ba"
       },
       {
+        "menuHeader" : "Pekerjaan"
+      },
+      {
+        "url" : "/tiket_team-tambah",
+        "name": "Input Data Pekerjaan",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "tbh.tiket"
+      },
+      {
         "menuHeader" : "Rekap"
       },
       {

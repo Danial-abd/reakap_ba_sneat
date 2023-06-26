@@ -17,4 +17,9 @@ class Jenistiket extends Model
     {
         return $this->hasOne(Tiketlist::class,'id_j_tiket','id');
     }
+
+    public function jobdesk()
+    {
+        return $this->belongsTo(jobdesk::class,'detail_kerja','id');
+    }
 }

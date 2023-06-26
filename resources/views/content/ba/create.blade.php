@@ -25,8 +25,13 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">No Berita Acara</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name='no_ba' id="basic-default-name"
-                                    placeholder="Masukkan No Berita Acara">
+                                <input type="text" class="form-control  @error('no_ba') is-invalid @enderror"
+                                    name='no_ba' id="basic-default-name" placeholder="Masukkan No Berita Acara">
+                                @error('id_material')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan masukkan no berita acara' }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -52,16 +57,49 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Upload File</label>
                             <div class="col-sm-10">
-                                <input class="form-control @error('file_ba') is-invalid @enderror"name="file_ba"
+                                <input class="form-control @error('file_ba') is-invalid @enderror" name="file_ba"
                                     type="file" id="formFile">
-                                    @error('file_ba') 
+                                @error('file_ba')
                                     <div class="invalid-feedback">
                                         {{ $message }}
-                                    </div> 
-                                    @enderror
+                                    </div>
+                                @enderror
 
                             </div>
                         </div>
+
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-default-name">Input Material</label>
+                            <div class="col-sm-7 mb-2">
+                                <select name="id_material[]"
+                                    class="form-control @error('id_material') is-invalid @enderror">
+                                    <option value="" disabled selected>--Pilih Material--</option>
+                                    @foreach ($material as $m)
+                                        <option value="{{ $m->id }}">{{ $m->nama_material }}</option>
+                                    @endforeach
+                                </select>
+                                @error('id_material')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nama material' }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col col-sm mb-2">
+                                <input type="number" name="jumlah[]"
+                                    class="form-control @error('jumlah') is-invalid @enderror" placeholder="Jumlah">
+                                @error('jumlah')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan jumlah material' }}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="col-auto">
+                                <button type="button" class="addmaterial btn btn-info">Tambah</button>
+                            </div>
+                        </div>
+
+                        <div class="material"></div>
+
                         <div class="row justify-content-end">
                             <div class="col-sm-10 gap-3 d-flex">
                                 <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
@@ -75,4 +113,21 @@
     </div>
     </div>
     {{-- </div> --}}
+    <script>
+        // var i = 0;
+        $('.addmaterial').on('click', function() {
+            addmaterial();
+        });
+
+        function addmaterial() {
+            // ++i;
+            var material =
+                '<div class ="row mb-3"><label class="col-sm-2 col-form-label" for="basic-default-name"></label><div class="col-sm-7 mb-2"><select name="id_material[]" class="form-control"><option value="" disabled selected>--Pilih Material--</option>@foreach ($material as $m)<option value="{{ $m->id }}">{{ $m->nama_material }}</option>@endforeach</select></div><div class="col col-sm mb-2"><input type="text" class="form-control" name="jumlah[]" placeholder="Jumlah"></div><div class="col-auto"><button type="button" class="hapus btn btn-info">hapus</button></div></div>';
+            $('.material').append(material);
+        };
+        $('.hapus').live('click', function() {
+            $(this).parent().parent().remove();
+        });
+    </script>
+
 @endsection

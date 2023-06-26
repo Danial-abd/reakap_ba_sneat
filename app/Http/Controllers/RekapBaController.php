@@ -54,6 +54,11 @@ class RekapBaController extends Controller
         $jtiket = $req->jtiket;
         $bln = $req->bulan;
         $rekap = Rekapba::orderBy('updated_at', 'ASC')->filter(request(['search', 'jtiket', 'bulan', 'tahun', 'team']))->get();
+
+        $req->validate([
+            'jtiket' => ['required'],
+            'bulan' => ['required'],
+          ]);
         
 
         if ($jtiket == "Gangguan") {

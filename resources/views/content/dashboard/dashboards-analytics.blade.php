@@ -117,7 +117,7 @@
         </div>
     @elseif (auth()->user()->jobdesk->jobdesk == 'Teknisi')
         <h5 class="card-title text-primary mb-2">Halo {{ auth()->user()->karyawan->nama }} 🎉</h5>
-        <h6 class="card-title mb-2">Teknisi {{ auth()->user()->jobdesk->detail_kerja }} |
+        <h6 class="card-title mb-2">Teknisi {{ auth()->user()->jobdesk->jenistiket->nama_tiket }} |
             {{ auth()->user()->teamdetail->teamlist->list_tim }}</h6>
         <h6 class="card-title">{{ auth()->user()->karyawan->nik }} </h6>
         <p class="mb-4 mt-4">Total Pekerjaan selesai dan Berita Acara pengeluaran material yang digunakan Bulan Ini : </p>

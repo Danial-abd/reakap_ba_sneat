@@ -21,15 +21,16 @@ class KaryawanController extends Controller
     public function search(Request $request)
     {
         $search = $request->search;
+        $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
 
         if ($search == null) {
             $karyawan = Karyawan::all();
-            return view('content.karyawan.index', compact('karyawan'));
+            return view('content.karyawan.index', compact('tglnow','karyawan'));
         } else {
             $karyawan = Karyawan::where('nama', 'LIKE', '%' . $search . '%')
                 ->orWhere('nik', 'LIKE', '%' . $search . '%')
                 ->get();
-            return view('content.karyawan.index', compact('karyawan'));
+            return view('content.karyawan.index', compact('tglnow','karyawan'));
         }
     }
 

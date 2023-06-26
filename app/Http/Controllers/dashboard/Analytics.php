@@ -17,7 +17,7 @@ class Analytics extends Controller
   public function index()
   {
     $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
-    $bln = '02';
+    $bln = date('m');
 
     // date('m')
     //psb

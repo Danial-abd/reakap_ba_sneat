@@ -84,7 +84,7 @@
             {{-- /Tim --}}
 
             <button class="btn btn-primary d-grid w-100">
-              Sign up
+              Edit
             </button>
           </form>
         </div>

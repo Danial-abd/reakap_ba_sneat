@@ -31,6 +31,12 @@
       "slug": "jt"
     },
     {
+      "url": "/lmaterial",
+      "name": "List Material",
+      "icon": "menu-icon tf-icons bx bx-list-ul",
+      "slug": "lm"
+    },
+    {
       "menuHeader": "Tiket"
     },
     {

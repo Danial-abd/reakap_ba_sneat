@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Beritaacara;
+use App\Models\Lmaterial;
+use App\Models\saldomaterial;
 use App\Models\Teamdetail;
 use App\Models\Teamlist;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Test;
 use PDF;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
@@ -15,22 +19,26 @@ class BeritaacaraController extends Controller
 {
     public function index()
     {
-
+        $bln = date('m');
         if (auth()->user()->jobdesk->jobdesk == "Teknisi") {
             $team = auth()->user()->teamdetail->teamlist->list_tim;
-            $beritaacara = Beritaacara::with(['teamdetail'])->whereHas('teamdetail', function ($query) use ($team){
-                $query->whereHas('teamlist', function ($query) use ($team){
+            $beritaacara = Beritaacara::with(['teamdetail'])->where(function ($query) use ($bln) {
+                $query->whereMonth('created_at', $bln);
+            })->whereHas('teamdetail', function ($query) use ($team) {
+                $query->whereHas('teamlist', function ($query) use ($team) {
                     $query->where('list_tim', $team);
                 });
             })->orderBy('updated_at', 'ASC')->filter(request(['search', 'bulan', 'tahun']))->get();
             $teamlist = Teamlist::all();
             $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
-            return view('content.ba.index', compact('beritaacara', 'teamlist','tglnow'));
+            return view('content.ba.index', compact('beritaacara', 'teamlist', 'tglnow'));
         }
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $beritaacara = Beritaacara::with(['teamdetail'])->orderBy('updated_at', 'ASC')->filter(request(['search', 'bulan', 'tahun']))->get();
         $teamlist = Teamlist::all();
-        return view('content.ba.index', compact('beritaacara','teamlist','tglnow'));
+        // $saldomaterial = saldomaterial::all();
+        $material = Lmaterial::all();
+        return view('content.ba.index', compact('material', 'beritaacara', 'teamlist', 'tglnow'));
     }
 
 
@@ -38,9 +46,10 @@ class BeritaacaraController extends Controller
     {
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $teamlist = Teamlist::all();
+        $material = Lmaterial::all();
         $teamdetail = Teamdetail::with(['teamlist'])->orderBy('id_team', 'ASC')->get();
 
-        return view('content.ba.create', compact('teamdetail', 'teamlist','tglnow'));
+        return view('content.ba.create', compact('teamdetail', 'teamlist', 'tglnow', 'material'));
     }
 
     public function show($id)
@@ -79,33 +88,84 @@ class BeritaacaraController extends Controller
 
     public function store(Request $request)
     {
+        $data = $request->all();
         $noBA = $request->no_ba;
+        $idba = Beritaacara::max('id');
         $cekNo = Beritaacara::where('no_ba', $noBA)->get();
         $hitung = $cekNo->count();
-        
-        if($hitung > 0 ){
+
+
+
+        $id_ba = $idba + 1;
+
+        if ($hitung > 0) {
             return redirect()->route('tbh.ba')->with('error', 'No Tiket Sudah Terdaftar');
         }
 
-        $this->validate($request, [
-            'file_ba' => 'required|mimes:pdf',
-        ]);
+        $jmlcek = $request->jumlah[0];
+        // dd($jmlcek);
+        if ($jmlcek != null) {
+            $request->validate([
+                'jumlah'        => 'required',
+                'no_ba'         => 'required',
+                'file_ba'       => 'required|mimes:pdf',
+                'id_material'   => 'required',
 
-        $filename = time() . '.' . $request->file('file_ba')->getClientOriginalname();
-        $request->file('file_ba')->move(public_path('/doc'), $filename);
+            ]);
 
-        $id = $request->id_tim;
-        $id_tim = Teamdetail::where('id', $id)->value('id_team');
+            $filename = time() . '.' . $request->file('file_ba')->getClientOriginalname();
+            $request->file('file_ba')->move(public_path('/doc'), $filename);
 
-        Beritaacara::create(
-            [
-                'file_ba' => $filename,
-                'no_ba' => $request->no_ba,
-                'id_tim' => $id,
-                'id_tl' => $id_tim,
-            ],
-        );
-        return redirect('/ba')->with('success', 'Berhasil Menambahkan Data');
+            $id = $request->id_tim;
+            $id_tim = Teamdetail::where('id', $id)->value('id_team');
+
+            Beritaacara::create(
+                [
+                    'file_ba' => $filename,
+                    'no_ba' => $request->no_ba,
+                    'id_tim' => $id,
+                    'id_tl' => $id_tim,
+                    'id' => $id_ba,
+                ],
+            );
+
+            if (count($data['id_material']) > 0) {
+
+
+                // dd($data['id_material'][$item]);
+                foreach ($data['id_material'] as $item => $value) {
+                    if ($data['id_material'][$item] == 1) {
+                        $data2 = array(
+                            'id_material' => $data['id_material'][$item],
+                            'id_ba' => $id_ba,
+                            'jumlah' => $data['jumlah'][$item] * 1000,
+                        );
+
+                        saldomaterial::create($data2);
+                    } else {
+                        $data2 = array(
+                            'id_material' => $data['id_material'][$item],
+                            'id_ba' => $id_ba,
+                            'jumlah' => $data['jumlah'][$item],
+                        );
+
+                        saldomaterial::create($data2);
+                    }
+                }
+            }
+
+            return redirect('/ba')->with('success', 'Berhasil Menambahkan Data');
+        } else if ($jmlcek == null) {
+
+            $request->validate([
+                'jumlah'        => 'required|integer',
+                'no_ba'         => 'required',
+                'file_ba'       => 'required|mimes:pdf',
+                'id_material'   => 'required',
+            ]);
+
+            return redirect('/ba')->with('success', 'Berhasil Menambahkan Data');
+        }
     }
 
     public function edit($id)
@@ -113,23 +173,30 @@ class BeritaacaraController extends Controller
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $teamdetail = Teamdetail::with(['teamlist'])->orderBy('id_team', 'ASC')->get();
         $beritaacara = Beritaacara::find($id);
-        return view('content.ba.edit', compact('teamdetail', 'beritaacara','tglnow'));
+        $material = Lmaterial::all();
+        return view('content.ba.edit', compact('material', 'teamdetail', 'beritaacara', 'tglnow'));
     }
 
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'file_ba' => 'mimes:pdf'
+            'file_ba' => 'mimes:pdf',
+            // 'id_material'=>['required'],
+            // 'jumlah'=>['required']
         ]);
 
+        $data = $request->all();
+
         $beritaacara = Beritaacara::find($id);
+        $slmaterial = Beritaacara::with(['saldomaterial'])->find($id);
+
+        saldomaterial::where('id_ba', $id)->delete();
 
         if ($request->file('file_ba') == null) {
             $beritaacara->update([
                 'no_ba' => $request->no_ba,
                 'id_tim' => $request->id_tim
             ],);
-            return redirect('/ba');
         } else {
             $filename = time() . '.' . $request->file('file_ba')->getClientOriginalname();
             $request->file('file_ba')->move(public_path('/doc'), $filename);
@@ -139,13 +206,39 @@ class BeritaacaraController extends Controller
                 'no_ba' => $request->no_ba,
                 'id_tim' => $request->id_tim
             ],);
-            return redirect('/ba');
         }
+
+        if (count($data['newid_material']) > 0) {
+            foreach ($data['newid_material'] as $item => $value) {
+                if ($data['newid_material'][$item] == 1) {
+                    $data2 = array(
+                        'id_material' => $data['newid_material'][$item],
+                        'id_ba' => $id,
+                        'jumlah' => $data['newjumlah'][$item] * 1000,
+                    );
+
+                    saldomaterial::create($data2);
+                } else {
+                    $data2 = array(
+                        'id_material' => $data['newid_material'][$item],
+                        'id_ba' => $id,
+                        'jumlah' => $data['newjumlah'][$item],
+                    );
+
+                    saldomaterial::create($data2);
+                }
+            }
+        }
+
+        return redirect('/ba');
     }
 
     public function delete($id)
     {
         $beritaacara = Beritaacara::find($id);
+        $file = $beritaacara->file_ba;
+        $pathToFile = public_path('doc/' . $file);
+        File::delete($pathToFile);
         $beritaacara->delete();
         return redirect('/ba');
     }

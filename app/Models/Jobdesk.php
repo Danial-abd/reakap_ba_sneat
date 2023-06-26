@@ -21,5 +21,10 @@ class Jobdesk extends Model
     {
         return $this->hasOne(User::class, 'role','id');
     }
+
+    public function jenistiket()
+    {
+        return $this->hasOne(Jenistiket::class, 'id','detail_kerja');
+    }
 }
 

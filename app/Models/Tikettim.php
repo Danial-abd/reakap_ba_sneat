@@ -10,7 +10,7 @@ class Tikettim extends Model
 {
     use HasFactory;
     protected $table    = 'tiket_tim';
-    protected $fillable = ['id_teknisi', 'id_tiket','id_tim'];
+    protected $fillable = ['id_teknisi', 'id_tiket','id_tim','id_j_tiket'];
 
     public function scopeFilter($query, array $filters)
     {

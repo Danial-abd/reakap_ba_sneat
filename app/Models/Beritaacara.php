@@ -10,7 +10,7 @@ class Beritaacara extends Model
 {
     use HasFactory;
     protected $table    = 'beritaacara';
-    protected $fillable = ['no_ba', 'id_tim', 'file_ba','id_tl'];
+    protected $fillable = ['no_ba', 'id_tim', 'file_ba','id_tl','id_material','id'];
 
     public function getUpdatedAtAttribute()
     {
@@ -68,4 +68,20 @@ class Beritaacara extends Model
     {
         return $this->hasOne(Teamlist::class,'id','id_tl');
     }
+
+    public function lmaterial()
+    {
+        return $this->hasMany(Lmaterial::class,'id_material','id');
+    }
+
+    public function saldomaterial()
+    {
+        return $this->hasMany(saldomaterial::class, 'id_ba','id');
+    }
+
+    public function saldomaterial2()
+    {
+        return $this->belongsTo(saldomaterial::class, 'id_ba','id');
+    }
+
 }
