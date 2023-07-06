@@ -58,11 +58,11 @@
                                                 {{ $list->nama }}
                                             @endforeach
                                         </td>
-                                        <td>{{ $td->jobdesk->jobdesk}} {{ $td->jobdesk->detail_kerja }}</td>
+                                        <td>{{ $td->jobdesk->jobdesk}} {{ $td->jobdesk->jenistiket->nama_tiket }}</td>
                                         <td>{{ $td->ket }}</td>
                                         <td>
                                             <div class="dropdown">
-                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                <button type="button p-0" class="btn dropdown-toggle hide-arrow"
                                                     data-bs-toggle="dropdown"><i
                                                         class="bx bx-dots-vertical-rounded"></i></button>
                                                 

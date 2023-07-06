@@ -50,11 +50,9 @@ class Analytics extends Controller
 
     $updatedggn = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
-    })->whereHas('tiketlist', function ($query) {
-      $query->whereHas('jenistiket', function ($query) {
+    })->whereHas('jenistiket', function ($query) {
         $query->where('id', '1');
-      });
-    })->count();
+      })->count();
 
     $baggn = Beritaacara::whereMonth('created_at', $bln)->whereHas('teamdetail', function ($query){
       $query->whereHas('jobdesk', function ($query) {

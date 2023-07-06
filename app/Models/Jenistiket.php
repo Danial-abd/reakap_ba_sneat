@@ -22,4 +22,9 @@ class Jenistiket extends Model
     {
         return $this->belongsTo(jobdesk::class,'detail_kerja','id');
     }
+
+    public function tikettim()
+    {
+        return $this->belongsTo(tikettim::class,'id_j_tiket','id');
+    }
 }

@@ -212,7 +212,7 @@
                                                     <td>{{ $no++ }}</td>
                                                     <td>{{ $count->list_tim }}</td>
                                                     <td>
-                                                        {{ $count->tikettims->teamdetail->jobdesk->detail_kerja ?? 'Tim Kosong' }}
+                                                        {{ $count->tikettims->teamdetail->jobdesk->jenistiket->nama_tiket ?? 'Tim Kosong' }}
                                                     </td>
                                                     <td>{{ $count->tikettims_count ?? '0' }}</td>
                                                     <td>{{ $count->ba_count ?? '0' }}</td>

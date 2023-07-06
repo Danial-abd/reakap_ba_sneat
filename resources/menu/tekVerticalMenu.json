@@ -44,6 +44,15 @@
         "name": "Rekap Berita Acara",
         "icon": "menu-icon tf-icons bx",
         "slug": "rba"
+      },
+      {
+        "menuHeader" : "Saldo"
+      },
+      {
+        "url" : "/saldo",
+        "name": "Saldo Material",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "sld"
       }
     ]
   }

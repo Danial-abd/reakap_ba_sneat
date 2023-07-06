@@ -44,7 +44,7 @@
                             <select name="id_jobdesk" id="id_jobdesk" class="form-control">
                                 <option value="" disabled selected>--Pilih Nama Pekerjaan--</option>
                                     @foreach($jobdesk as $jd)
-                                        <option value="{{$jd->id}}">{{$jd->jobdesk}} {{ $jd->detail_kerja}}</option>    
+                                        <option value="{{$jd->id}}">{{$jd->jobdesk}} {{ $jd->jenistiket->nama_tiket }}</option>    
                                     @endforeach
                             </select>
                         </div>

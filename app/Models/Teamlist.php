@@ -41,6 +41,16 @@ class Teamlist extends Model
         return $this->belongsTo(Beritaacara::class,'id','id_tl');
     }
 
+    // public function saldomaterial() {
+    //     return $this->belongsTo(saldomaterial::class,'id','id_tim');
+    // }
+    public function saldomaterial()
+    {
+        return $this->hasMany(saldomaterial::class,'id_tim','id');
+    }
+
+
+
     public function scopeFilter($query, array $filters)
     {
         $query->when($filters['jtiket'] ?? false, function ($query, $jtiket) {

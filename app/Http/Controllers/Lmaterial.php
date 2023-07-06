@@ -12,8 +12,7 @@ class Lmaterial extends Controller
     {
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $material = ModelMaterial::all();
-        // return view('content.material.index', compact('tglnow','material'));
-        return response()->json($material);
+        return view('content.material.index', compact('tglnow','material'));
         
     }
 

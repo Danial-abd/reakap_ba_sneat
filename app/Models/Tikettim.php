@@ -10,7 +10,24 @@ class Tikettim extends Model
 {
     use HasFactory;
     protected $table    = 'tiket_tim';
-    protected $fillable = ['id_teknisi', 'id_tiket','id_tim','id_j_tiket'];
+    protected $fillable = [
+        'id',
+        'id_teknisi', 
+        'id_tiket', 
+        'id_tim', 
+        'id_j_tiket',
+        'no_tiket',
+        'nama_pic',
+        'no_pic',
+        'alamat',
+        'ket',
+        'latitude',
+        'longitude',
+        'status',
+        'f_lokasi',
+        'f_progress',
+        'f_lap_tele',
+    ];
 
     public function scopeFilter($query, array $filters)
     {
@@ -32,21 +49,21 @@ class Tikettim extends Model
         });
 
         $query->when($filters['bulan'] ?? false, function ($query, $bulan) {
-            return $query->where(function($query) use ($bulan){
+            return $query->where(function ($query) use ($bulan) {
                 $query->whereMonth('updated_at', $bulan);
             });
         });
 
         $query->when($filters['tahun'] ?? false, function ($query, $tahun) {
-            return $query->where(function($query) use ($tahun){
+            return $query->where(function ($query) use ($tahun) {
                 $query->whereYear('updated_at', $tahun);
             });
         });
 
         $query->when($filters['team'] ?? false, function ($query, $team) {
-            return $query->where(function($query) use ($team){
-                $query->whereHas('teamdetail', function($query) use ($team){
-                    $query->whereHas('teamlist', function($query) use ($team){
+            return $query->where(function ($query) use ($team) {
+                $query->whereHas('teamdetail', function ($query) use ($team) {
+                    $query->whereHas('teamlist', function ($query) use ($team) {
                         $query->where('list_tim', 'LIKE', $team);
                     });
                 });
@@ -54,28 +71,26 @@ class Tikettim extends Model
         });
 
         $query->when($filters['bulan'] ?? false, function ($query, $bulan) {
-            return $query->where(function($query) use ($bulan){
+            return $query->where(function ($query) use ($bulan) {
                 $query->whereMonth('updated_at', $bulan);
             });
         });
 
         $query->when($filters['tahun'] ?? false, function ($query, $tahun) {
-            return $query->where(function($query) use ($tahun){
+            return $query->where(function ($query) use ($tahun) {
                 $query->whereYear('updated_at', $tahun);
             });
         });
 
         $query->when($filters['jtiket'] ?? false, function ($query, $jtiket) {
-            return $query->where(function($query) use ($jtiket){
-                $query->whereHas('tiketlist', function($query) use ($jtiket){
-                    $query->whereHas('jenistiket', function($query) use ($jtiket){
+            return $query->where(function ($query) use ($jtiket) {
+                $query->whereHas('tiketlist', function ($query) use ($jtiket) {
+                    $query->whereHas('jenistiket', function ($query) use ($jtiket) {
                         $query->where('nama_tiket', 'LIKE', $jtiket);
                     });
                 });
             });
         });
-
-        
     }
 
     public function getCreatedAtAttribute()
@@ -91,7 +106,7 @@ class Tikettim extends Model
 
     public function tiketlist()
     {
-        return $this->hasOne(Tiketlist::class,'id','id_tiket');
+        return $this->hasOne(Tiketlist::class, 'id', 'id_tiket');
     }
 
     public function rekapba()
@@ -99,13 +114,24 @@ class Tikettim extends Model
         return $this->hasOne(RekapBa::class, 'id_tiket', 'id');
     }
 
-    public function teamlist() {
-        return $this->belongsTo(Teamlist::class,'id_tim','id');
+    public function jenistiket()
+    {
+        return $this->hasOne(jenistiket::class, 'id', 'id_j_tiket');
     }
 
-    public function teamlists() 
+    public function teamlist()
     {
-        return $this->hasOne(Teamlist::class,'id','id_tim');
+        return $this->belongsTo(Teamlist::class, 'id_tim', 'id');
+    }
+
+    public function teamlists()
+    {
+        return $this->hasOne(Teamlist::class, 'id', 'id_tim');
+    }
+
+    public function saldomaterial()
+    {
+        return $this->hasMany(saldomaterial::class, 'id_tiket','id');
     }
 
     // public function teamlist()

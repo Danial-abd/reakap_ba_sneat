@@ -19,16 +19,17 @@ class BeritaacaraController extends Controller
 {
     public function index()
     {
+        // ->where(function ($query) use ($bln) {
+        //     $query->whereMonth('created_at', $bln);
+        // })
         $bln = date('m');
         if (auth()->user()->jobdesk->jobdesk == "Teknisi") {
             $team = auth()->user()->teamdetail->teamlist->list_tim;
-            $beritaacara = Beritaacara::with(['teamdetail'])->where(function ($query) use ($bln) {
-                $query->whereMonth('created_at', $bln);
-            })->whereHas('teamdetail', function ($query) use ($team) {
+            $beritaacara = Beritaacara::with(['teamdetail'])->whereHas('teamdetail', function ($query) use ($team) {
                 $query->whereHas('teamlist', function ($query) use ($team) {
                     $query->where('list_tim', $team);
                 });
-            })->orderBy('updated_at', 'ASC')->filter(request(['search', 'bulan', 'tahun']))->get();
+            })->orderBy('created_at', 'DESC')->filter(request(['search', 'bulan', 'tahun']))->get();
             $teamlist = Teamlist::all();
             $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
             return view('content.ba.index', compact('beritaacara', 'teamlist', 'tglnow'));
@@ -94,8 +95,6 @@ class BeritaacaraController extends Controller
         $cekNo = Beritaacara::where('no_ba', $noBA)->get();
         $hitung = $cekNo->count();
 
-
-
         $id_ba = $idba + 1;
 
         if ($hitung > 0) {
@@ -139,6 +138,8 @@ class BeritaacaraController extends Controller
                             'id_material' => $data['id_material'][$item],
                             'id_ba' => $id_ba,
                             'jumlah' => $data['jumlah'][$item] * 1000,
+                            'digunakan' => 0,
+                            'id_tim' => $id_tim
                         );
 
                         saldomaterial::create($data2);
@@ -147,6 +148,8 @@ class BeritaacaraController extends Controller
                             'id_material' => $data['id_material'][$item],
                             'id_ba' => $id_ba,
                             'jumlah' => $data['jumlah'][$item],
+                            'digunakan' => 0,
+                            'id_tim' => $id_tim
                         );
 
                         saldomaterial::create($data2);
@@ -188,7 +191,7 @@ class BeritaacaraController extends Controller
         $data = $request->all();
 
         $beritaacara = Beritaacara::find($id);
-        $slmaterial = Beritaacara::with(['saldomaterial'])->find($id);
+        // $slmaterial = Beritaacara::with(['saldomaterial'])->find($id);
 
         saldomaterial::where('id_ba', $id)->delete();
 
@@ -215,6 +218,8 @@ class BeritaacaraController extends Controller
                         'id_material' => $data['newid_material'][$item],
                         'id_ba' => $id,
                         'jumlah' => $data['newjumlah'][$item] * 1000,
+                        'digunakan' => 0,
+                        'id_tim' => $request->id_tim,
                     );
 
                     saldomaterial::create($data2);
@@ -223,6 +228,8 @@ class BeritaacaraController extends Controller
                         'id_material' => $data['newid_material'][$item],
                         'id_ba' => $id,
                         'jumlah' => $data['newjumlah'][$item],
+                        'digunakan' => 0,
+                        'id_tim' => $request->id_tim,
                     );
 
                     saldomaterial::create($data2);

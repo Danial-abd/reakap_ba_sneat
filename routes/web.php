@@ -6,6 +6,7 @@ use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Lmaterial;
 use App\Http\Controllers\RekapBaController;
+use App\Http\Controllers\saldocontroller;
 use App\Http\Controllers\TeamdetailController;
 use App\Http\Controllers\TeamlistController;
 use App\Http\Controllers\TiketlistController;
@@ -142,6 +143,9 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin']], function () {
 
     //rekap berita acara
     Route::get('/rba/print', [RekapBaController::class, 'print'])->name('print.rba');
+
+    Route::get('/saldo_edit/{id}', [saldocontroller::class, 'edit'])->name('edt.sld');
+    Route::post('/saldo_up/{id_tim}', [saldocontroller::class, 'update'])->name('up.sld');
 });
 
 
@@ -180,4 +184,6 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin,Teknisi']], functio
     Route::get('/rba-dlt/{id}', [RekapBaController::class, 'delete'])->name('dlt.rba');
     // Route::get('/rba/search', [RekapBaController::class, 'search'])->name('search.rba');
     Route::get('/rba/show/{id}/{file_ba}', [RekapBaController::class, 'show'])->name('shw.rba');
+
+    Route::get('/saldo', [saldocontroller::class, 'index'])->name('sld');
 });

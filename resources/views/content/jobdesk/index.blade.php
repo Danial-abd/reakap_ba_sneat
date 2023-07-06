@@ -54,7 +54,7 @@
                                         <td>{{ $no++ }}</td>
                                         <td>{{ $jd->kd_jd }}</td>
                                         <td>{{ $jd->jobdesk }}</td>
-                                        <td>{{ $jd->detail_kerja }}</td>
+                                        <td>{{ $jd->jenistiket->nama_tiket ?? "" }}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
