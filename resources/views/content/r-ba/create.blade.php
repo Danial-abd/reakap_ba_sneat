@@ -40,8 +40,8 @@
                                 <select name="id_tiket" class="form-control  @error('id_tiket') is-invalid @enderror">
                                     <option value="" disabled selected>--Pilih Tiket--</option>
                                     @foreach ($tikettim as $tik)
-                                        <option value="{{ $tik->id }}">Tiket : {{ $tik->tiketlist->no_tiket }}, Jenis
-                                            Tiket : {{ $tik->tiketlist->jenistiket->nama_tiket }}, Tim :
+                                        <option value="{{ $tik->id }}">Tiket : {{ $tik->no_tiket }}, Jenis
+                                            Tiket : {{ $tik->jenistiket->nama_tiket }}, Tim :
                                             {{ $tik->teamdetail->teamlist->list_tim }}</option>
                                     @endforeach
                                 </select>

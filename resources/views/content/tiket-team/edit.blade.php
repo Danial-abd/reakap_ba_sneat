@@ -39,13 +39,87 @@
                     </div>
                 @enderror
 
+                @if (auth()->user()->jobdesk->jenistiket->nama_tiket == 'Pasang Baru')
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>History Update Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Status</th>
+                                            <th>Keterangan</th>
+                                            <th>Tanggal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @if ($histrev != null)
+                                            @forelse ($histrev as $his)
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $his->status }}</td>
+                                                    <td>{{ $his->ketrev }}</td>
+                                                    <td>{{ $his->created_at }}</td>
+                                                </tr>
+                                            @empty
+                                            @endforelse
+                                        @else
+                                            <tr>
+                                                <td class="align-middle" colspan="4" align="center">
+                                                    Data Kosong
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5>Data Pekerjaan</h5>
                     </div>
                     <div class="card-body">
-
                         @csrf
+                        @if (auth()->user()->jobdesk->detail_kerja == 1)
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Penyebab Gangguan</label>
+                                <div class="col-sm-10">
+                                    <select name="id_ggn" id="ggn" onchange="showInputGgn()" class="form-control">
+                                        <option value="" disabled selected>--Pilih Penyebab--</option>
+                                        @foreach ($penyebab as $index => $penyebab)
+                                            @if ($index != 0)
+                                                <option value="{{ $penyebab->id }}"
+                                                    {{ $tiktim->ggnpenyebab->first()->id == $penyebab->id ? 'selected' : '' }}>
+                                                    {{ $penyebab->penyebab }}</option>
+                                            @endif
+                                        @endforeach
+
+                                        <option value="1"
+                                            {{ $tiktim->ggnpenyebab->first()->id == 1 ? 'selected' : '' }}>
+                                            {{ $penyebab->first()->penyebab }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            @if ($tiktim->ggnpenyebab->first()->id == 1)
+                            <div class="row mb-3" id="inputGgn">
+                                <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                                <div class="col-sm">
+                                    <input type="text" value="{{ $tiktim->ggnpenyebab->first()->pivot->ket }}" id="ket_ggn" class="form-control" name='ket_ggn'
+                                        id="basic-default-name" placeholder="Masukkan Penyebab Gangguan">
+                                </div>
+                            </div>
+                            @endif
+                        @endif
                         @if (auth()->user()->jobdesk->jobdesk == 'Teknisi')
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Tim</label>
@@ -93,6 +167,18 @@
                                 <input type="hidden" class="form-control" name='id_j_tiket'
                                     value="{{ auth()->user()->jobdesk->detail_kerja }}" id="basic-default-name"
                                     placeholder="">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">No Internet</label>
+                            <div class="col-sm">
+                                <input type="text" class="form-control  @error('no_inet') is-invalid @enderror"
+                                    name='no_inet' value="{{ $tiktim->no_inet }}" placeholder="Masukkan Nomor Internet">
+                                @error('no_inet')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nomor berlangganan' }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -309,7 +395,11 @@
 
                         <div class="row justify-content-between">
                             <div class="col-sm-10 gap-3 d-flex">
-                                <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
+                                @if ($tiktim->status === 'Approved')
+                                    <button type="button" class="btn btn-secondary" disabled>Simpan</button>
+                                @else
+                                    <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
+                                @endif
                                 <a href="{{ route('tiket') }}" class="btn btn-outline-danger ">Batal</a>
                             </div>
                         </div>
@@ -323,22 +413,25 @@
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    {{-- <script>
-        var map = L.map('map');
-            map.setView([{{$tiktim->latitude}}, {{$tiktim->longitude}}], 17);
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-        
-        marker = L.marker([{{$tiktim->latitude}}, {{$tiktim->longitude}}]).addTo(map);
-    </script> --}}
+    
     <script>
         var lokasi = document.getElementById('lokasi');
         var corx = document.getElementById('latitude');
         var cory = document.getElementById('longitude');
 
         var x = document.getElementById('lo');
+
+        function showInputGgn() {
+            var selectElement = document.getElementById('ggn');
+            var inputField = document.getElementById('inputGgn');
+
+            if (selectElement.value === '1') {
+                inputField.style.display = '';
+            } else {
+                // Sembunyikan inputField untuk opsi lainnya
+                inputField.style.display = 'none';
+            }
+        }
 
         $('.addmaterial').on('click', function() {
             addmaterial();
@@ -415,6 +508,8 @@
         $('.hapus').live('click', function() {
             $(this).parent().parent().remove();
         });
+
+        
     </script>
     {{-- </div> --}}
 @endsection

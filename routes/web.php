@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\BeritaacaraController;
+use App\Http\Controllers\ggnpenyebabcontroller;
 use App\Http\Controllers\JenistiketController;
 use App\Http\Controllers\JobdeskController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\Lmaterial;
 use App\Http\Controllers\RekapBaController;
 use App\Http\Controllers\saldocontroller;
+use App\Http\Controllers\Sektorcontroller;
 use App\Http\Controllers\TeamdetailController;
 use App\Http\Controllers\TeamlistController;
 use App\Http\Controllers\TiketlistController;
@@ -53,6 +55,14 @@ Route::group(['middleware' => ['auth', 'CekRole:Master']], function () {
     Route::post('/up_material/{kd_material}', [Lmaterial::class, 'update'])->name('up.lm');
     Route::get('/dlt_material/{id}', [Lmaterial::class, 'delete'])->name('dlt.mm');
     Route::get('/material/search', [Lmaterial::class, 'search'])->name('search.lm');
+
+    //penyuebab gangguan
+    Route::get('/pg-ggn', [ggnpenyebabcontroller::class, 'index'])->name('pg');
+    Route::get('/pg-create', [ggnpenyebabcontroller::class, 'create'])->name('pg-create');
+    Route::get('/pg-edit/{id}', [ggnpenyebabcontroller::class, 'edit'])->name('pg-edit');
+    Route::post('/pg-store', [ggnpenyebabcontroller::class, 'store'])->name('pg-store');
+    Route::post('/pg-up/{id}', [ggnpenyebabcontroller::class, 'update'])->name('pg-up');
+    Route::get('/pg-dlt/{id}', [ggnpenyebabcontroller::class, 'delete'])->name('pg-dlt');
 });
 
 
@@ -105,12 +115,23 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin']], function () {
     Route::post('/tiket-simpan-ggn', [TiketlistController::class, 'ggnstore'])->name('spn.ggn');
     Route::post('/tiket-simpan-mtn', [TiketlistController::class, 'mtnstore'])->name('spn.mtn');
 
+    Route::get('tiket-detail/{id}', [TikettimController::class, 'detail'])->name('edt.detail');
+    Route::post('update-detail/{id}', [TikettimController::class, 'updtl'])->name('up.detail');
+
+
     Route::post('/tiket-update/{id}', [TiketlistController::class, 'ggnupdate'])->name('up.ggn');
     Route::get('/tiket-edit/{id}', [TiketlistController::class, 'ggnedit'])->name('edt.ggn');
     Route::get('/tiket-dlt/{id}', [TiketlistController::class, 'ggndelete'])->name('dlt.ggn');
 
     //tiket update
 
+    //sektor
+    Route::get('/sektor',[Sektorcontroller::class, 'index'])->name('sektor');
+    Route::get('/sektor-tambah',[Sektorcontroller::class, 'create'])->name('sektor-tbh');
+    Route::post('/sektor-spn',[Sektorcontroller::class, 'store'])->name('sektor-spn');
+    Route::get('/sektor-edit/{id}',[Sektorcontroller::class, 'edit'])->name('sektor-edt');
+    Route::post('/sektor-up/{id}',[Sektorcontroller::class, 'update'])->name('sektor-up');
+    Route::get('/sektor-dlt/{id}',[Sektorcontroller::class, 'delete'])->name('sektor-dlt');
 
     //Tiket Tambah
 
@@ -144,8 +165,17 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin']], function () {
     //rekap berita acara
     Route::get('/rba/print', [RekapBaController::class, 'print'])->name('print.rba');
 
-    Route::get('/saldo_edit/{id}', [saldocontroller::class, 'edit'])->name('edt.sld');
-    Route::post('/saldo_up/{id_tim}', [saldocontroller::class, 'update'])->name('up.sld');
+    Route::get('/tiket_team-psb', [TikettimController::class, 'index_psb'])->name('tiket-psb');
+    Route::get('tiket_print-psb', [TikettimController::class, 'print_psb'])->name('print.tiket-psb');
+    Route::get('/tiket_team-ggn', [TikettimController::class, 'index_ggn'])->name('tiket-ggn');
+    Route::get('/tiket_team-mtn', [TikettimController::class, 'index_mtn'])->name('tiket-mtn');
+
+    Route::get('/saldo_edit/{id}/{bln}', [saldocontroller::class, 'edit'])->name('edt.sld');
+    Route::post('/saldo_up/{id_tim}/{bln}', [saldocontroller::class, 'update'])->name('up.sld');
+    Route::get('/history-saldo', [saldocontroller::class, 'index_history'])->name('hsld');
+    Route::get('/history-edit/{id}', [saldocontroller::class, 'edit_history'])->name('e.hsld');
+    Route::post('/history-update/{id}', [saldocontroller::class, 'update_history'])->name('up.hsld');
+    Route::get('/history-delete/{id}', [saldocontroller::class, 'delete_history'])->name('dlt.hsld');
 });
 
 

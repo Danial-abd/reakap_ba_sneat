@@ -21,4 +21,9 @@ class Karyawan extends Model
     {
         return $this->hasOne(User::class, 'id_karyawan', 'id');
     }
+
+    public function teamdetails()
+    {
+        return $this->hasOne(Teamdetail::class,'id_karyawan','id');
+    }
 }

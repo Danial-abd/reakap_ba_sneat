@@ -37,18 +37,28 @@ class LoginBasic extends Controller
     $password = $request->password;
     $name = Karyawan::where('nik', $nik)->value('id');
 
+    $cek_role = User::where('id_karyawan', $name)->get();
+
     $request->validate([
       'id_karyawan' => ['required'],
       'password' => ['required'],
     ]);
 
+    // dd($cek_role[0]->jobdesk);
+
+    
+
+
     // dd(Auth::attempt(['id_karyawan' => $name, 'password' => $password]));
     if (Auth::attempt(['id_karyawan' => $name, 'password' => $password])) {
-
+      if ($cek_role[0]->jobdesk->jobdesk == 'Teknisi' && $cek_role[0]->role_t == null){
+        return redirect('/auth/login')->with('loginError', 'Akun belum terdaftar pada tim');
+      }
       $request->session()->regenerate();
       return redirect()->intended('/');
-    }
+    } else {
     return redirect('/auth/login')->with('loginError', 'Username atau Password salah!!');
+    }
   }
 
   public function signin(Request $request)
@@ -82,7 +92,7 @@ class LoginBasic extends Controller
   public function page()
   {
     $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
-    $user = User::all();
+    $user = User::with(['teamdetail'])->get();
     return view('content.authentications.auth-page', compact(['user', 'tglnow']));
   }
 
@@ -125,4 +135,9 @@ class LoginBasic extends Controller
     $user->update($validate);
     return redirect('/page/user')->with('success', 'Data Berhasil di Simpan');
   }
+
+    public function delete($id){
+      User::find($id)->delete();
+      return redirect('/page/user');
+    }
 }

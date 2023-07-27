@@ -15,7 +15,8 @@
                     </h4>
                 </td>
                 @if (auth()->user()->jobdesk->jobdesk == 'Master' || auth()->user()->jobdesk->jobdesk == 'Admin')
-                    <form action="{{ route('print.tiket') }}" method="get" class="form-item" enctype="multipart/form-data">
+                    <form action="{{ route('print.tiket') }}" method="get" target="_blank" class="form-item"
+                        enctype="multipart/form-data">
                         <td class="col-md-2">
                             <select name="jtiket" class="form-control mb-4">
                                 <option value="" disabled selected>-Pekerjaan-</option>
@@ -25,20 +26,23 @@
                             </select>
                         </td>
                         <td class="col-md-2">
+                            @php
+                                $bln = date('m');
+                            @endphp
                             <select name="bulan" class="form-control mb-4">
                                 <option value="" disabled selected>--Bulan--</option>
-                                <option value="01">Januari</option>
-                                <option value="02">Februari</option>
-                                <option value="03">Maret</option>
-                                <option value="04">April</option>
-                                <option value="05">Mei</option>
-                                <option value="06">Juni</option>
-                                <option value="07">Juli</option>
-                                <option value="08">Agustus</option>
-                                <option value="09">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
+                                <option value="01" {{ $bln == 1 ? 'selected' : '' }}>Januari</option>
+                                <option value="03" {{ $bln == 03 ? 'selected' : '' }}>Maret</option>
+                                <option value="02" {{ $bln == 02 ? 'selected' : '' }}>Februari</option>
+                                <option value="04" {{ $bln == 04 ? 'selected' : '' }}>April</option>
+                                <option value="05" {{ $bln == 05 ? 'selected' : '' }}>Mei</option>
+                                <option value="06" {{ $bln == 06 ? 'selected' : '' }}>Juni</option>
+                                <option value="07" {{ $bln == 07 ? 'selected' : '' }}>Juli</option>
+                                <option value="08" {{ $bln == 8 ? 'selected' : '' }}>Agustus</option>
+                                <option value="09" {{ $bln == 9 ? 'selected' : '' }}>September</option>
+                                <option value="10" {{ $bln == 10 ? 'selected' : '' }}>Oktober</option>
+                                <option value="11" {{ $bln == 11 ? 'selected' : '' }}>November</option>
+                                <option value="12" {{ $bln == 12 ? 'selected' : '' }}>Desember</option>
                             </select>
                         </td>
                         <td class="col-md-2 col-2">
@@ -48,8 +52,7 @@
                             echo $tahun; ?>">
                         </td>
                         <td>
-                            <button type="submit" target="_blank" class="btn btn-info mb-4 float-end ms-2"
-                                name="cari">print</button>
+                            <button type="submit" target="_blank" class="btn btn-info mb-4 float-end ms-2">print</button>
                         </td>
                     </form>
                 @endif
@@ -82,20 +85,24 @@
                                 </div>
                         </div>
                         <div class="col mt-2 d-grid mx-auto">
+                            @php
+                                $bln = date('m');
+                            @endphp
                             <select name="bulan" class="form-control">
                                 <option value="" disabled selected>--Bulan--</option>
-                                <option value="01">Januari</option>
-                                <option value="02">Februari</option>
-                                <option value="03">Maret</option>
-                                <option value="04">April</option>
-                                <option value="05">Mei</option>
-                                <option value="06">Juni</option>
-                                <option value="07">Juli</option>
-                                <option value="08">Agustus</option>
-                                <option value="09">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
+                                <option value="">Semua Data</option>
+                                <option value="01" {{ $bln == 1 ? 'selected' : '' }}>Januari</option>
+                                <option value="03" {{ $bln == 03 ? 'selected' : '' }}>Maret</option>
+                                <option value="02" {{ $bln == 02 ? 'selected' : '' }}>Februari</option>
+                                <option value="04" {{ $bln == 04 ? 'selected' : '' }}>April</option>
+                                <option value="05" {{ $bln == 05 ? 'selected' : '' }}>Mei</option>
+                                <option value="06" {{ $bln == 06 ? 'selected' : '' }}>Juni</option>
+                                <option value="07" {{ $bln == 07 ? 'selected' : '' }}>Juli</option>
+                                <option value="08" {{ $bln == 8 ? 'selected' : '' }}>Agustus</option>
+                                <option value="09" {{ $bln == 9 ? 'selected' : '' }}>September</option>
+                                <option value="10" {{ $bln == 10 ? 'selected' : '' }}>Oktober</option>
+                                <option value="11" {{ $bln == 11 ? 'selected' : '' }}>November</option>
+                                <option value="12" {{ $bln == 012 ? 'selected' : '' }}>Desember</option>
                             </select>
                         </div>
                         @if (auth()->user()->jobdesk->jobdesk == 'Master')
@@ -128,34 +135,70 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>No</th>
-                                    <th>Status Tiket</th>
-                                    <th>Nama Tim</th>
-                                    <th>Anggota</th>
+                                    @if (auth()->user()->jobdesk->detail_kerja == 2)
+                                        <th>Status Tiket</th>
+                                    @endif
                                     <th>No Tiket</th>
                                     <th>Nama PIC</th>
-                                    <th>No PIC</th>
-                                    <th>alamat</th>
-                                    <th>Pekerjaan</th>
-                                    <th>Ket</th>
-                                    <th>Tanggal Upload</th>
-                                    <th>Aksi</th>
+                                    @if (auth()->user()->jobdesk->detail_kerja == 1)
+                                        <th>Sektor</th>
+                                        <th>Penyebab</th>
+                                        <th>Penyebab Lainnya</th>
+                                        <th>Ket. Perbaikan</th>
+                                        <th>Tanggal Upload Tiket</th>
+                                        <th>Aksi</th>
+                                    @endif
+                                    @if (auth()->user()->jobdesk->detail_kerja == 2)
+                                        <th>Sektor</th>
+                                        <th>Ket</th>
+                                        <th>Tanggal Upload</th>
+                                        <th>Aksi</th>
+                                    @endif
+                                    @if (auth()->user()->jobdesk->detail_kerja == 3)
+                                        <th>Ket</th>
+                                        <th>Tanggal Upload</th>
+                                        <th>Aksi</th>
+                                    @endif
                                 </tr>
+                            </thead>
+                            <tbody>
                                 @php
                                     $no = 1;
                                 @endphp
                                 @foreach ($tiktim as $t)
                                     <tr>
                                         <td>{{ $no++ }}</td>
-                                        <td>{{ $t->status}}</td>
-                                        <td>{{ $t->teamlist->list_tim }}</td>
-                                        <td>{{ $t->teamdetail->karyawan->nama }}</td>
+                                        @if (auth()->user()->jobdesk->detail_kerja == 2)
+                                            <td>{{ $t->status }}</td>
+                                        @endif
                                         <td>{{ $t->no_tiket }}</td>
                                         <td>{{ $t->nama_pic }}</td>
-                                        <td>{{ $t->no_pic }}</td>
-                                        <td>{{ $t->alamat }}</td>
-                                        <td>{{ $t->jenistiket->nama_tiket ?? '' }}</td>
-                                        <td>{{ $t->ket }}</td>
-                                        <td>{{ $t->created_at }}</td>
+                                        <td>
+                                            @foreach ($t->teamlist->sektor as $tl)
+                                                {{ $tl->sektor }}
+                                            @endforeach
+                                        </td>
+                                        @if (auth()->user()->jobdesk->detail_kerja == 2)
+                                            <td>
+                                                {{ $t->ketrev == null ? 'Menunggu Pengecekkan oleh admin' : $t->ketrev }}
+                                            </td>
+                                        @endif
+                                        @if (auth()->user()->jobdesk->detail_kerja == 1)
+                                            @foreach ($t->ggnpenyebab as $pggn)
+                                                <td>
+                                                    {{ $pggn->penyebab }}
+                                                </td>
+
+                                                <td>
+                                                    {{ $pggn->pivot->ket }}
+                                                </td>
+                                            @endforeach
+                                            <td>
+                                                {{ $t->ket }}
+                                            </td>
+                                        @endif
+
+                                        <td>{{ $t->updated_at }}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -173,7 +216,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
                 </dir>

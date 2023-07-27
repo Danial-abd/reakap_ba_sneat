@@ -17,25 +17,25 @@
                 </div>
             @endif
             @error('f_progress')
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> </br>
-                Harap Masukkan Foto Progress Kawan!!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> </br>
+                    Harap Masukkan Foto Progress Kawan!!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @enderror
             @error('f_lokasi')
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> </br>
-                Harap Masukkan Foto Lokasi Kawan!!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> </br>
+                    Harap Masukkan Foto Lokasi Kawan!!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @enderror
             @error('f_lap_tele')
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error!</strong> </br>
-                Harap Masukkan Screenshoot Hasil Laporan dari Telegram Kawan!!
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> </br>
+                    Harap Masukkan Screenshoot Hasil Laporan dari Telegram Kawan!!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @enderror
             <form action="{{ route('spn.tiket') }}" method="POST" class="form-item" enctype="multipart/form-data">
                 <div class="card mb-4">
@@ -43,11 +43,35 @@
                         <h5>Data Pekerjaan</h5>
                     </div>
                     <div class="card-body">
-
                         @csrf
+                        
+                        @if (auth()->user()->jobdesk->detail_kerja == 1)
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Penyebab Gangguan</label>
+                                <div class="col-sm-10">
+                                    <select name="id_ggn" id="ggn" onchange="showInputGgn()" class="form-control">
+                                        <option value="" disabled selected>--Pilih Penyebab--</option>
+                                        @foreach ($penyebab as $index => $penyebab)
+                                            @if ($index != 0)
+                                                <option value="{{ $penyebab->id }}">{{ $penyebab->penyebab }}</option>
+                                            @endif
+                                        @endforeach
+                                        <option value="{{ $penyebab->first()->id }}">{{ $penyebab->first()->penyebab }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="inputGgn" style="display: none;">
+                                <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                                <div class="col-sm">
+                                    <input type="text" id="ket_ggn" class="form-control" name='ket_ggn' id="basic-default-name"
+                                        placeholder="Masukkan Penyebab Gangguan">
+                                </div>
+                            </div>
+                        @endif
                         @if (auth()->user()->jobdesk->jobdesk == 'Teknisi')
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Tim</label>
+                                <label class="col-sm-2 col-form-label">Nama Tim</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" readonly
                                         value="{{ auth()->user()->teamdetail->teamlist->list_tim }} {{ auth()->user()->teamdetail->karyawan->nama }}"
@@ -59,7 +83,7 @@
                             </div>
                         @else
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Tim</label>
+                                <label class="col-sm-2 col-form-label">Nama Tim</label>
                                 <div class="col-sm-10">
                                     <select name="id_teknisi" id="id_team" class="form-control">
                                         <option value="" disabled selected>--Pilih Nama Tim--</option>
@@ -73,7 +97,7 @@
                             </div>
                         @endif
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">No Tiket</label>
+                            <label class="col-sm-2 col-form-label">No Tiket</label>
                             <div class="col col-sm">
                                 <input type="text" class="form-control  @error('no_tiket') is-invalid @enderror"
                                     name='no_tiket' id="basic-default-name" placeholder="Masukkan No Tiket">
@@ -83,7 +107,7 @@
                                     </div>
                                 @enderror
                             </div>
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Tiket</label>
+                            <label class="col-sm-2 col-form-label">Tiket</label>
                             <div class="col-sm">
                                 <input type="text" class="form-control" readonly
                                     value="{{ auth()->user()->jobdesk->jenistiket->nama_tiket }}" id="basic-default-name"
@@ -94,7 +118,19 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Pelanggan</label>
+                            <label class="col-sm-2 col-form-label">No Internet</label>
+                            <div class="col-sm">
+                                <input type="text" class="form-control  @error('no_inet') is-invalid @enderror"
+                                    name='no_inet' placeholder="Masukkan Nomor Internet">
+                                @error('no_inet')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nomor berlangganan' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Nama Pelanggan</label>
                             <div class="col-sm">
                                 <input type="text" class="form-control  @error('nama_pic') is-invalid @enderror"
                                     name='nama_pic' id="basic-default-name" placeholder="Masukkan Nama Pelanggan">
@@ -106,7 +142,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">No Pic</label>
+                            <label class="col-sm-2 col-form-label">No Pic</label>
                             <div class="col-sm">
                                 <input type="number" class="form-control  @error('no_pic') is-invalid @enderror"
                                     name='no_pic' id="basic-default-name" placeholder="Masukkan Nomor Pelanggan">
@@ -118,7 +154,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Alamat</label>
+                            <label class="col-sm-2 col-form-label">Alamat</label>
                             <div class="col-sm-10">
                                 <textarea name="alamat" id="alamat" class="form-control  @error('alamat') is-invalid @enderror" cols="2"
                                     rows="3" placeholder="Masukkan Alamat" style="resize : none"></textarea>
@@ -130,7 +166,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Ket</label>
+                            <label class="col-sm-2 col-form-label">Ket</label>
                             <div class="col-sm-10">
                                 <textarea name="ket" id="alamat" class="form-control @error('ket') is-invalid @enderror" cols="2"
                                     rows="3" placeholder="Masukkan Keterangan Tiket" style="resize : none"></textarea>
@@ -142,7 +178,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">lokasi</label>
+                            <label class="col-sm-2 col-form-label">lokasi</label>
                             <div class="col input-group">
                                 <button class="btn btn-primary lokasi" type="button" id=""><span
                                         class="tf-icons bx bx-location-plus"></span></button>
@@ -160,7 +196,7 @@
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name"></label>
+                            <label class="col-sm-2 col-form-label"></label>
                             <div class="col">
                                 <div id="map"></div>
                             </div>
@@ -189,63 +225,63 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($saldo as $s)
-                                    <tr>
-                                        <td>
+                                        <tr>
+                                            <td>
                                                 {{ $s->material->nama_material }} </br>
-                                        </td>
-                                        <td>
+                                            </td>
+                                            <td>
                                                 {{ $s->total_jumlah }} {{ $s->total_jumlah >= 1000 ? 'm' : 'pcs' }}</br>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     @empty
-                                    <tr >
-                                        <td class="align-middle" colspan="2" align="center">
-                                            Material Kosong
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td class="align-middle" colspan="2" align="center">
+                                                Material Kosong
+                                            </td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
                         </div>
-                        @if($saldo->count() == 0)
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="alert alert-danger" role="alert">
-                                    Harap Masukkan Berita Acara dengan Material Baru untuk Input Tiket
-                                  </div>
-                                
+                        @if ($saldo->count() == 0)
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <div class="alert alert-danger" role="alert">
+                                        Harap Masukkan Berita Acara dengan Material Baru untuk Input Tiket
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
                         @else
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Input Material</label>
-                            <div class="col-sm-7 mb-2">
-                                <select name="id_material[]"
-                                    class="form-control @error('id_material') is-invalid @enderror">
-                                    <option value="" disabled selected>--Pilih Material--</option>
-                                    @foreach ($material as $m)
-                                        <option value="{{ $m->id }}">{{ $m->nama_material }}</option>
-                                    @endforeach
-                                </select>
-                                @error('id_material')
-                                    <div class="invalid-feedback">
-                                        {{ 'Harap isikan nama material' }}
-                                    </div>
-                                @enderror
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Input Material</label>
+                                <div class="col-sm-7 mb-2">
+                                    <select name="id_material[]"
+                                        class="form-control @error('id_material') is-invalid @enderror">
+                                        <option value="" disabled selected>--Pilih Material--</option>
+                                        @foreach ($material as $m)
+                                            <option value="{{ $m->id }}">{{ $m->nama_material }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_material')
+                                        <div class="invalid-feedback">
+                                            {{ 'Harap isikan nama material' }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="col col-sm mb-2">
+                                    <input type="number" name="jumlah[]"
+                                        class="form-control @error('jumlah') is-invalid @enderror" placeholder="Jumlah">
+                                    @error('jumlah')
+                                        <div class="invalid-feedback">
+                                            {{ 'Harap isikan jumlah material' }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="addmaterial btn btn-info">Tambah</button>
+                                </div>
                             </div>
-                            <div class="col col-sm mb-2">
-                                <input type="number" name="jumlah[]"
-                                    class="form-control @error('jumlah') is-invalid @enderror" placeholder="Jumlah">
-                                @error('jumlah')
-                                    <div class="invalid-feedback">
-                                        {{ 'Harap isikan jumlah material' }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="col-auto">
-                                <button type="button" class="addmaterial btn btn-info">Tambah</button>
-                            </div>
-                        </div>
                         @endif
                         <div class="material"></div>
 
@@ -260,7 +296,7 @@
                         <div class="row justify-content-md-center mb-4 ">
                             <div class="col mb-4">
                                 <div class="row">
-                                    <label class="form-label" for="basic-default-name">Foto Lokasi</label>
+                                    <label class="form-label">Foto Lokasi</label>
                                 </div>
                                 <div class="row mb-2">
                                     <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="lok"
@@ -274,7 +310,7 @@
 
                             <div class="col mb-4">
                                 <div class="row">
-                                    <label class="form-label" for="basic-default-name">Foto Progress</label>
+                                    <label class="form-label">Foto Progress</label>
                                 </div>
                                 <div class="row mb-2">
                                     <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="prog"
@@ -288,7 +324,7 @@
 
                             <div class="col mb-4">
                                 <div class="row">
-                                    <label class="form-label" for="basic-default-name">Laporan Telegram</label>
+                                    <label class="form-label">Laporan Telegram</label>
                                 </div>
                                 <div class="row mb-2">
                                     <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="tele"
@@ -399,6 +435,18 @@
         $('.hapus').live('click', function() {
             $(this).parent().parent().remove();
         });
+
+        function showInputGgn() {
+            var selectElement = document.getElementById('ggn');
+            var inputField = document.getElementById('inputGgn');
+
+            if (selectElement.value === '1') {
+                inputField.style.display = '';
+            } else {
+                // Sembunyikan inputField untuk opsi lainnya
+                inputField.style.display = 'none';
+            }
+        }
     </script>
     {{-- </div> --}}
 @endsection

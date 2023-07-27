@@ -5,6 +5,7 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Beritaacara;
 use App\Models\Jenistiket;
+use App\Models\Teamdetail;
 use App\Models\Teamlist;
 use App\Models\Tiketlist;
 use App\Models\Tikettim;
@@ -18,22 +19,21 @@ class Analytics extends Controller
   {
     $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
     $bln = date('m');
+    $nickname = "";
 
     // date('m')
     //psb
-    $inputpsb = Tiketlist::where(function ($query) use ($bln) {
+    $inputpsb = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
     })->whereHas('jenistiket', function ($query) {
-      $query->where('id', '2');
-    })->count();
+        $query->where('id', '2');
+      })->count();
 
     $updatedpsb = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
-    })->whereHas('tiketlist', function ($query) {
-      $query->whereHas('jenistiket', function ($query) {
+    })->whereHas('jenistiket', function ($query) {
         $query->where('id', '2');
-      });
-    })->count();
+      })->where('status', 'Approved')->count();
 
     $bapsb = Beritaacara::whereMonth('created_at', $bln)->whereHas('teamdetail', function ($query){
       $query->whereHas('jobdesk', function ($query) {
@@ -69,11 +69,9 @@ class Analytics extends Controller
 
     $updatedmtn = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
-    })->whereHas('tiketlist', function ($query) {
-      $query->whereHas('jenistiket', function ($query) {
+    })->whereHas('jenistiket', function ($query) {
         $query->where('id', '3');
-      });
-    })->count();
+      })->count();
 
     $bamtn = Beritaacara::whereMonth('created_at', $bln)->whereHas('teamdetail', function ($query){
       $query->whereHas('jobdesk', function ($query) {
@@ -82,9 +80,9 @@ class Analytics extends Controller
     })->count();
 
     //total
-    $inputtotal = Tiketlist::where(function ($query) use ($bln) {
+    $inputtotal = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
-    })->count();
+    })->where('status','Approved')->orWhere('status', null)->count();
 
     $updatedtotal = Tikettim::where(function ($query) use ($bln) {
       $query->whereMonth('created_at', $bln);
@@ -127,9 +125,13 @@ class Analytics extends Controller
 
     //jenis tiket
     $jenistiket = Jenistiket::all();
+    $teamlist = Teamlist::all();
+    $teamdetail = Teamdetail::all();
 
     return view('content.dashboard.dashboards-analytics', compact([
       'tglnow',
+      'teamdetail',
+      'teamlist',
       'inputpsb',
       'updatedpsb',
       'inputggn',
@@ -144,7 +146,8 @@ class Analytics extends Controller
       'bapsb',
       'baggn',
       'bamtn',
-      'batotal'
+      'batotal',
+      'nickname'
     ]));
   }
 }

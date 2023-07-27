@@ -22,7 +22,9 @@
                             <select name="id_team" id="id_team" class="form-control">
                                 <option value="" disabled selected>--Pilih Nama Tim--</option>
                                     @foreach($teamlist as $tl)
+                                        
                                         <option value="{{$tl->id}}">{{$tl->list_tim}}</option>    
+                                    
                                     @endforeach
                             </select>
                         </div>
@@ -30,7 +32,7 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Anggota</label>
                             <div class="col-sm-10">
-                            <select name="id_karyawan" id="id_team" class="form-control">
+                            <select name="id_karyawan" class="form-control">
                                 <option value="" disabled selected>--Pilih Nama Karyawan--</option>
                                     @foreach($karyawan as $k)
                                         <option value="{{$k->id}}">{{$k->nama}}</option>    

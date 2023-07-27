@@ -18,20 +18,7 @@
       {
         "url" : "/psbtiket",
         "name": "Tiket Pasang Baru",
-        "icon": "menu-icon tf-icons bx",
         "slug": "psb"
-      },
-      {
-        "url" : "/ggntiket",
-        "name": "Tiket Gangguan",
-        "icon": "menu-icon tf-icons bx",
-        "slug": "ggn"
-      },
-      {
-        "url" : "/mtntiket",
-        "name": "Tiket Maintenance",
-        "icon": "menu-icon tf-icons bx",
-        "slug": "mtn"
       },
       {
         "menuHeader" : "Team"
@@ -39,29 +26,20 @@
       {
         "url": "/tl",
         "name": "Daftar Team",
-        "icon": "menu-icon tf-icons bx",
         "slug": "tl"
       },
       {
         "url":"/td",
         "name": "Anggota Team",
-        "icon": "menu-icon tf-icons bx",
         "slug": "td"
       },
       {
-        "menuHeader" : "Rekap"
+        "menuHeader" : "Sektor"
       },
       {
-        "url" : "/tiket_team",
-        "name": "Rekap Tiket",
-        "icon": "menu-icon tf-icons bx",
-        "slug": "tiket"
-      },
-      {
-        "url" : "/rba",
-        "name": "Rekap Berita Acara",
-        "icon": "menu-icon tf-icons bx",
-        "slug": "rba"
+        "url" : "/sektor",
+        "name": "List Sektor",
+        "slug": "sektor"
       },
       {
         "menuHeader" : "Saldo"
@@ -69,8 +47,89 @@
       {
         "url" : "/saldo",
         "name": "Saldo Material",
-        "icon": "menu-icon tf-icons bx",
         "slug": "sld"
+      },
+      {
+        "url" : "/history-saldo",
+        "name": "History Pengembalian Material",
+        "slug": "hsld"
+      },
+      {
+        "menuHeader" : "Laporan"
+      },
+      {
+        "name": "Rekap Tiket",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "tiket", 
+        "submenu": [
+          {
+            "url" : "/tiket_team-psb",
+            "name": "Rekap Tiket Pasang Baru",
+            "slug": "tiket-psb"
+          },
+          {
+            "url" : "/tiket_team-ggn",
+            "name": "Rekap Tiket Gangguan",
+            "slug": "tiket-ggn"
+          },
+          {
+            "url" : "/tiket_team-mtn",
+            "name": "Rekap Tiket Maintenance",
+            "slug": "tiket-mtn"
+          }
+        ]
+      },
+      {
+        "name": "Rekap Berita Acara",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "rba", 
+        "submenu": [
+          {
+            "url" : "/rba",
+            "name": "Rekap Berita Acara Pasang Baru",
+            "slug": "rba-psb"
+          },
+          {
+            "url" : "/rba",
+            "name": "Rekap Berita Acara Gangguan",
+            "slug": ""
+          },
+          {
+            "url" : "/rba",
+            "name": "Rekap Berita Acara Maintenance",
+            "slug": ""
+          }
+        ]
+      },
+      {
+        "name": "Material",
+        "icon": "menu-icon tf-icons bx bx-home-circle",
+        "slug": "mtl", 
+        "submenu": [
+          {
+            "url" : "/material-total",
+            "name": "Total Material",
+            "slug": "mtl-total"
+          },
+          {
+            "url" : "/material-pengembalian",
+            "name": "Pengembalian",
+            "slug": "mtl-kembali"
+          }
+        ]
+      },
+      
+      {
+        "url" : "/psb-banyak",
+        "name": "Tim Pemasangan Terbanyak",
+        "icon": "menu-icon tf-icons bx",
+        "slug": ""
+      },
+      {
+        "url" : "/psb-performance",
+        "name": "Performa Pasang Baru",
+        "icon": "menu-icon tf-icons bx",
+        "slug": ""
       }
     ]
   }

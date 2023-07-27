@@ -190,8 +190,8 @@
                                 @foreach ($beritaacara as $ba)
                                     <tr class="align-baseline">
                                         <td>{{ $no++ }}</td>
-                                        <td>{{ $ba->teamdetail->teamlist->list_tim }}</td>
-                                        <td>{{ $ba->teamdetail->jobdesk->jenistiket->nama_tiket }}</td>
+                                        <td>{{ $ba->teamlist->list_tim }}</td>
+                                        <td>{{ $ba->teamdetail->jobdesk->jenistiket->nama_tiket ?? '' }}</td>
                                         <td>{{ $ba->no_ba }}</td>
 
                                         <td>

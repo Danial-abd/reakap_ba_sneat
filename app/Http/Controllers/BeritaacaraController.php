@@ -25,17 +25,15 @@ class BeritaacaraController extends Controller
         $bln = date('m');
         if (auth()->user()->jobdesk->jobdesk == "Teknisi") {
             $team = auth()->user()->teamdetail->teamlist->list_tim;
-            $beritaacara = Beritaacara::with(['teamdetail'])->whereHas('teamdetail', function ($query) use ($team) {
-                $query->whereHas('teamlist', function ($query) use ($team) {
+            $beritaacara = Beritaacara::with(['teamdetail'])->whereHas('teamdetail', function ($query) use ($team) { $query->whereHas('teamlist', function ($query) use ($team) {
                     $query->where('list_tim', $team);
-                });
-            })->orderBy('created_at', 'DESC')->filter(request(['search', 'bulan', 'tahun']))->get();
+                });})->orderBy('created_at', 'DESC')->filter(request(['search', 'bulan', 'tahun']))->get();
             $teamlist = Teamlist::all();
             $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
             return view('content.ba.index', compact('beritaacara', 'teamlist', 'tglnow'));
         }
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
-        $beritaacara = Beritaacara::with(['teamdetail'])->orderBy('updated_at', 'ASC')->filter(request(['search', 'bulan', 'tahun']))->get();
+        $beritaacara = Beritaacara::with(['teamlist'])->orderBy('updated_at', 'ASC')->filter(request(['search', 'bulan', 'tahun']))->get();
         $teamlist = Teamlist::all();
         // $saldomaterial = saldomaterial::all();
         $material = Lmaterial::all();
@@ -116,8 +114,9 @@ class BeritaacaraController extends Controller
             $request->file('file_ba')->move(public_path('/doc'), $filename);
 
             $id = $request->id_tim;
-            $id_tim = Teamdetail::where('id', $id)->value('id_team');
+            $id_tim = auth()->user()->teamdetail->teamlist->id;
 
+            // dd($id);
             Beritaacara::create(
                 [
                     'file_ba' => $filename,
@@ -137,7 +136,7 @@ class BeritaacaraController extends Controller
                         $data2 = array(
                             'id_material' => $data['id_material'][$item],
                             'id_ba' => $id_ba,
-                            'jumlah' => $data['jumlah'][$item] * 1000,
+                            'jumlah' => $data['jumlah'][$item] * 1,
                             'digunakan' => 0,
                             'id_tim' => $id_tim
                         );
@@ -182,6 +181,8 @@ class BeritaacaraController extends Controller
 
     public function update(Request $request, $id)
     {
+        $id_tim = auth()->user()->karyawan->id;
+        
         $this->validate($request, [
             'file_ba' => 'mimes:pdf',
             // 'id_material'=>['required'],
@@ -191,6 +192,7 @@ class BeritaacaraController extends Controller
         $data = $request->all();
 
         $beritaacara = Beritaacara::find($id);
+
         // $slmaterial = Beritaacara::with(['saldomaterial'])->find($id);
 
         saldomaterial::where('id_ba', $id)->delete();
@@ -198,7 +200,7 @@ class BeritaacaraController extends Controller
         if ($request->file('file_ba') == null) {
             $beritaacara->update([
                 'no_ba' => $request->no_ba,
-                'id_tim' => $request->id_tim
+                'id_tim' => $id_tim
             ],);
         } else {
             $filename = time() . '.' . $request->file('file_ba')->getClientOriginalname();
@@ -207,8 +209,8 @@ class BeritaacaraController extends Controller
             $beritaacara->update([
                 'file_ba' => $filename,
                 'no_ba' => $request->no_ba,
-                'id_tim' => $request->id_tim
-            ],);
+                'id_tim' => $id_tim
+            ]);
         }
 
         if (count($data['newid_material']) > 0) {
@@ -217,7 +219,7 @@ class BeritaacaraController extends Controller
                     $data2 = array(
                         'id_material' => $data['newid_material'][$item],
                         'id_ba' => $id,
-                        'jumlah' => $data['newjumlah'][$item] * 1000,
+                        'jumlah' => $data['newjumlah'][$item] * 1,
                         'digunakan' => 0,
                         'id_tim' => $request->id_tim,
                     );

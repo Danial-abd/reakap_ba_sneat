@@ -42,7 +42,7 @@
                                 <select name="role" class="form-control @error('role') is-invalid @enderror">
                                     <option value="" disabled selected>--Pilih Role--</option>
                                     @foreach ($jobdesk as $job)
-                                        <option value="{{ $job->id }}">{{ $job->jobdesk }} {{ $job->detail_kerja }}
+                                        <option value="{{ $job->id }}">{{ $job->jobdesk }} {{ $job->jenistiket->nama_tiket ?? '' }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -106,9 +106,9 @@
                                 <select name="role_t" id="id_team" class="form-control">
                                     <option value="" disabled selected>--Pilih Nama Tim--</option>
                                     @foreach ($teamdetail as $td)
-                                        <option value="{{ $td->id }}">{{ $td->teamlist->list_tim }} ,
+                                        <option value="{{ $td->id_karyawan }}">{{ $td->teamlist->list_tim }} ,
                                             {{ $td->karyawan->nama }}, {{ $td->jobdesk->jobdesk }}
-                                            {{ $td->jobdesk->detail_kerja }}</option>
+                                            {{ $td->jobdesk->jenistiket->nama_tiket }}</option>
                                     @endforeach
                                 </select>
                             </div>

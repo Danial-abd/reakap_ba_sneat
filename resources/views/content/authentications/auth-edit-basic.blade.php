@@ -77,7 +77,7 @@
               <select name="role_t" id="id_team" class="form-control">
                 <option value="" disabled selected>--Pilih Nama Tim--</option>
                 @foreach ($teamdetail as $td)
-                    <option value="{{ $td->id }}" {{$user->role_t == $td->id ? 'selected' : '' }}>{{ $td->teamlist->list_tim }} , {{ $td->karyawan->nama }}, {{ $td->jobdesk->jobdesk }} {{ $td->jobdesk->detail_kerja }}</option>
+                    <option value="{{ $td->id_karyawan }}" {{$user->role_t == $td->id ? 'selected' : '' }}>{{ $td->teamlist->list_tim }} , {{ $td->karyawan->nama }}, {{ $td->jobdesk->jobdesk }} {{ $td->jobdesk->detail_kerja }}</option>
                 @endforeach
             </select> 
             </div>

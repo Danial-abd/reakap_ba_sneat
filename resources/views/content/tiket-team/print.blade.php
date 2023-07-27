@@ -26,12 +26,14 @@
 
 <body>
     <hr>
-    <br>
     <center>
         <h4>{{ $pdfname }}</h4>
     </center>
 
-    <p>Total Pengerjaan Tiket Dalam Sebulan</p><br>
+
+    Berikut Total Pengerjaan Tiket Dalam Sebulan </br>
+    Pada masing-masing tim
+
     <table style="width: 30%">
         <tr style="width: 25%">
             <th>Nama Tim</th>
@@ -60,35 +62,37 @@
 
     <div class="table-responsive">
         <table class="table table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>No</th>
-                    <th>Nama Tim</th>
-                    <th>Anggota</th>
-                    <th>No Tiket</th>
-                    <th>Nama PIC</th>
-                    <th>No PIC</th>
-                    <th>alamat</th>
-                    <th>Pekerjaan</th>
-                    <th>Ket</th>
-                    <th>Tanggal Upload</th>
-                </tr>
-            </thead>
-                @php
-                    $no = 1;
-                @endphp
+            <tr>
+                <th>No</th>
+                <th>Nama Tim</th>
+                <th>Sektor</th>
+                <th>No Tiket</th>
+                <th>No Internet</th>
+                <th>Nama PIC</th>
+                <th>No PIC</th>
+                <th>alamat</th>
+                <th>Ket</th>
+                <th>Tanggal Upload</th>
+            </tr>
+            @php
+                $no = 1;
+            @endphp
             <tbody>
                 @foreach ($tiktim as $t)
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $t->teamlist->list_tim }}</td>
-                        <td>{{ $t->teamdetail->karyawan->nama }}</td>
-                        <td>{{ $t->tiketlist->no_tiket }}</td>
-                        <td>{{ $t->tiketlist->nama_pic }}</td>
-                        <td>{{ $t->tiketlist->no_pic }}</td>
-                        <td>{{ $t->tiketlist->alamat }}</td>
-                        <td>{{ $t->tiketlist->jenistiket->nama_tiket }}</td>
-                        <td>{{ $t->tiketlist->ket }}</td>
+                        <td>
+                            @foreach ($t->teamdetail->teamlist->sektor as $tl)
+                                {{ $tl->sektor }}
+                            @endforeach
+                        </td>
+                        <td>{{ $t->no_tiket }}</td>
+                        <td>{{ $t->no_inet }}</td>
+                        <td>{{ $t->nama_pic }}</td>
+                        <td>{{ $t->no_pic }}</td>
+                        <td>{{ $t->alamat }}</td>
+                        <td>{{ $t->ket }}</td>
                         <td>{{ $t->updated_at }}</td>
                     </tr>
                 @endforeach

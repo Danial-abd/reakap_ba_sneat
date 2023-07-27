@@ -12,9 +12,18 @@ class Teamlist extends Model
     protected $fillable = ['list_tim'];
     public $timestamps = false;
 
+    public function saldomaterial()
+    {
+        return $this->hasMany(saldomaterial::class,'id_tim','id');
+    }
+
     public function teamdetail()
     {
         return $this->hasOne(Teamdetail::class,'id_team','id');
+    }
+
+    public function sektor(){
+        return $this->belongsToMany(Sektor::class, 'sektor_tim', 'id_tim', 'id_sektor');
     }
 
     public function tiketlist() {
@@ -41,13 +50,15 @@ class Teamlist extends Model
         return $this->belongsTo(Beritaacara::class,'id','id_tl');
     }
 
+
+
     // public function saldomaterial() {
     //     return $this->belongsTo(saldomaterial::class,'id','id_tim');
     // }
-    public function saldomaterial()
-    {
-        return $this->hasMany(saldomaterial::class,'id_tim','id');
-    }
+    // public function saldomaterial()
+    // {
+    //     return $this->hasMany(saldomaterial::class,'id_tim','id');
+    // }
 
 
 

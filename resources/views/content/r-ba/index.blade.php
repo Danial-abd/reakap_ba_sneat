@@ -200,8 +200,8 @@
                                         <td>{{ $no++ }}</td>
                                         <td>{{ $rk->teamlist->list_tim }}</td>
                                         <td>{{ $rk->beritaacara->no_ba }}</td>
-                                        <td>{{ $rk->tikettim->tiketlist->no_tiket }}</td>
-                                        <td>{{ $rk->tikettim->tiketlist->jenistiket->nama_tiket }}</td>
+                                        <td>{{ $rk->tikettim->no_tiket }}</td>
+                                        <td>{{ $rk->tikettim->jenistiket->nama_tiket }}</td>
                                         <td>
                                             {{ $rk->beritaacara->file_ba }}
                                             <a href="/rba/show/{{ $rk->beritaacara->id }}/{{ $rk->beritaacara->file_ba }}"

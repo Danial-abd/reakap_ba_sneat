@@ -12,11 +12,11 @@ class Tikettim extends Model
     protected $table    = 'tiket_tim';
     protected $fillable = [
         'id',
-        'id_teknisi', 
-        'id_tiket', 
+        'id_teknisi',
         'id_tim', 
         'id_j_tiket',
         'no_tiket',
+        'no_inet',
         'nama_pic',
         'no_pic',
         'alamat',
@@ -24,13 +24,17 @@ class Tikettim extends Model
         'latitude',
         'longitude',
         'status',
+        'ketrev',
         'f_lokasi',
         'f_progress',
         'f_lap_tele',
     ];
 
+    
+
     public function scopeFilter($query, array $filters)
     {
+        
         $query->when($filters['search'] ?? false, function ($query, $search) {
             return $query->whereHas('teamdetail', function ($query) use ($search) {
                 $query->whereHas('teamlist', function ($query) use ($search) {
@@ -45,7 +49,7 @@ class Tikettim extends Model
                         ->orWhereHas('jenistiket', function ($query) use ($search) {
                             $query->where('nama_tiket', 'LIKE', $search);
                         });
-                });
+                })->orWhere('no_tiket','LIKE',$search);
         });
 
         $query->when($filters['bulan'] ?? false, function ($query, $bulan) {
@@ -91,22 +95,42 @@ class Tikettim extends Model
                 });
             });
         });
+
+        // $query->when($filters['ntiket'] ?? false, function ($query, $ntiket){
+        //     return $query->where(function ($query) use ($ntiket){
+        //         $query->where('no_tiket','LIKE',$ntiket);
+        //     });
+        // });
+    }
+    public function ggnpenyebab(){
+        return $this->belongsToMany(Ggnpenyebab::class, 'ggn_tiket', 'id_tiket', 'id_penyebab')->withPivot('ket');
     }
 
-    public function getCreatedAtAttribute()
+    // public function getCreatedAtAttribute()
+    // {
+    //     return Carbon::parse($this->attributes['created_at'])
+    //         ->translatedFormat('l, d F Y H:i:s');
+    // }
+
+    public function getUpdatedAtAttribute()
     {
-        return Carbon::parse($this->attributes['created_at'])
+        return Carbon::parse($this->attributes['updated_at'])
             ->translatedFormat('l, d F Y H:i:s');
     }
 
     public function teamdetail()
     {
-        return $this->hasOne(Teamdetail::class, 'id', 'id_teknisi');
+        return $this->hasOne(Teamdetail::class, 'id_karyawan', 'id_teknisi');
     }
 
     public function tiketlist()
     {
         return $this->hasOne(Tiketlist::class, 'id', 'id_tiket');
+    }
+
+    public function historyrev()
+    {
+        return $this->belongsTo(historyrev::class, 'id_tiket','id');
     }
 
     public function rekapba()

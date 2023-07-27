@@ -83,7 +83,7 @@
                                         <td>{{ $usr->created_at }}</td>
                                         <td>{{ $usr->updated_at }}</td>
                                         <td>{{ $usr->jobdesk->jobdesk }} {{ $usr->jobdesk->jenistiket->nama_tiket ?? ""}}</td>
-                                        <td>{{ $usr->teamdetail->teamlist->list_tim ?? '' }}</td>
+                                        <td>{{ $usr->teamdetail->teamlist->list_tim ?? ''}}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

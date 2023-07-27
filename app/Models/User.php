@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function teamdetail()
     {
-        return $this->belongsTo(Teamdetail::class, 'role_t', 'id');
+        return $this->belongsTo(Teamdetail::class, 'role_t', 'id_karyawan');
     }
 
     public function karyawan()

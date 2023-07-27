@@ -30,7 +30,7 @@
             height: 180px;
         }
     </style>
-
+{{-- <div id="lo"></div> --}}
     <!-- Include Styles -->
     @include('layouts/sections/styles')
 
@@ -39,11 +39,10 @@
 </head>
 
 <body>
-    
     <!-- Layout Content -->
     @yield('layoutContent')
     <!--/ Layout Content -->
-    <div id="lo"></div>
+    
     {{-- remove while creating package --}}
     {{-- remove while creating package end --}}
 

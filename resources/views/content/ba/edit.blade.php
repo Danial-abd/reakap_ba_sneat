@@ -27,17 +27,17 @@
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Tim</label>
                             <div class="col-sm-10">
                                 @if (auth()->user()->jobdesk->jobdesk == 'Teknisi')
-                                    <input type="text" class="form-control" readonly name='id_tim'
+                                    <input type="text" class="form-control" readonly
                                         value="{{ auth()->user()->teamdetail->teamlist->list_tim }} {{ auth()->user()->teamdetail->karyawan->nama }}"
                                         id="basic-default-name" placeholder="Masukkan Kode Jobdesk">
-                                    <input type="hidden" class="form-control" readonly name='id_tim'
-                                        value="{{ auth()->user()->teamdetail->id }}" id="basic-default-name"
+                                    <input type="hidden" class="form-control" name='id_tim'
+                                        value="{{ auth()->user()->teamdetail->teamlist->id }}" 
                                         placeholder="Masukkan Kode Jobdesk">
                                 @else
                                     <select name="id_tim" class="form-control">
                                         <option value="" disabled selected>--Pilih Nama Tim--</option>
-                                        @foreach ($teamdetail as $td)
-                                            <option value="{{ $td->id }}">{{ $td->teamlist->list_tim }}</option>
+                                        @foreach ($teamlist as $td)
+                                            <option value="{{ $td->id }}">{{ $td->list_tim }}</option>
                                         @endforeach
                                     </select>
                                 @endif

@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Rekap Tiket Tim')
+@section('title', 'Saldo Material')
 
 @section('content')
 
@@ -8,18 +8,18 @@
 
     <h4 class="fw-bold py-3 mb-4">
         <p><span class="text-muted fw-light"><a href="{{ route('sld') }}" class="text-reset fw-bold">
-                    Saldo Material Tim/ </a></span></p>Update Data {{ $saldotim[0]->teamlist->list_tim }}
+                    Saldo Material Tim/ </a></span></p>Update Data {{ $tl->list_tim }}
     </h4>
     <div class="row justify-content-center">
         <div class="col-md-12">
             @if (Session::has('error'))
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> {{ session('error') }}
+                    <strong>Error!</strong> {{ session('error') }} Melebihi sisa saldo
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
-            <form action="{{ route('up.sld', $saldotim[0]->id_tim ) }}" method="POST" class="form-item" enctype="multipart/form-data">
+            <form action="{{ route('up.sld', [$saldotim[0]->id_tim, $bln] ) }}" method="POST" class="form-item" enctype="multipart/form-data">
             @csrf
             <div class="card mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">
@@ -58,6 +58,7 @@
                             </tbody>
                         </table>
                     </div>
+
                     @if ($saldotim->count() == 0)
                         <div class="row mb-3">
                             <div class="col">
@@ -68,6 +69,7 @@
                             </div>
                         </div>
                     @else
+                    
                         <h6 class="mb-4">Update Data Pengembalian</h6>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Input Material</label>

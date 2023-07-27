@@ -56,7 +56,7 @@ class Beritaacara extends Model
 
     public function teamdetail()
     {
-        return $this->belongsTo(Teamdetail::class, 'id_tim', 'id');
+        return $this->belongsTo(Teamdetail::class, 'id_tim', 'id_karyawan');
     }
 
     public function rekapba()

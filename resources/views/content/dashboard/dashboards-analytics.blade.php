@@ -54,7 +54,7 @@
                                 </div>
                                 <span class="d-block mb-1 text-muted">Sudah Terinput</span>
                                 <h3 class="card-title mb-2">{{ $inputpsb }}</h3>
-                                <span class="d-block mb-1 text-muted">Update Teknisi</span>
+                                <span class="d-block mb-1 text-muted">Tiket Approve</span>
                                 <h3 class="card-title mb-2">{{ $updatedpsb }}</h3>
                                 <span class="d-block mb-1 text-muted">Berita Acara</span>
                                 <h3 class="card-title mb-2">{{ $bapsb }}</h3>
@@ -67,8 +67,7 @@
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <h5 class="fw-semibold d-block mb-1">Gangguan</h5>
                                 </div>
-                                <span class="d-block mb-1 text-muted">Sudah Terinput</span>
-                                <h3 class="card-title mb-2">{{ $inputggn }}</h3>
+
                                 <span class="d-block mb-1 text-muted">Update Teknisi</span>
                                 <h3 class="card-title mb-2">{{ $updatedggn }}</h3>
                                 <span class="d-block mb-1 text-muted">Berita Acara</span>
@@ -87,8 +86,7 @@
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <h5 class="fw-semibold d-block mb-1">Maintenance</h5>
                                 </div>
-                                <span class="d-block mb-1 text-muted">Sudah Terinput</span>
-                                <h3 class="card-title mb-2">{{ $inputmtn }}</h3>
+
                                 <span class="d-block mb-1 text-muted">Update Teknisi</span>
                                 <h3 class="card-title mb-2">{{ $updatedmtn }}</h3>
                                 <span class="d-block mb-1 text-muted">Berita Acara</span>
@@ -102,10 +100,8 @@
                                 <div class="card-title d-flex align-items-start justify-content-between">
                                     <h5 class="fw-semibold d-block mb-1">Total</h5>
                                 </div>
-                                <span class="d-block mb-1 text-muted">Sudah Terinput</span>
+                                <span class="d-block mb-1 text-muted">Data Laporan Pekerjaan Aman</span>
                                 <h3 class="card-title mb-2">{{ $inputtotal }}</h3>
-                                <span class="d-block mb-1 text-muted">Update Teknisi</span>
-                                <h3 class="card-title mb-2">{{ $updatedtotal }}</h3>
                                 <span class="d-block mb-1 text-muted">Berita Acara</span>
                                 <h3 class="card-title mb-2">{{ $batotal }}</h3>
                             </div>
@@ -118,8 +114,9 @@
     @elseif (auth()->user()->jobdesk->jobdesk == 'Teknisi')
         <h5 class="card-title text-primary mb-2">Halo {{ auth()->user()->karyawan->nama }} 🎉</h5>
         <h6 class="card-title mb-2">Teknisi {{ auth()->user()->jobdesk->jenistiket->nama_tiket }} |
-            {{ auth()->user()->teamdetail->teamlist->list_tim }}</h6>
+            {{ auth()->user()->teamdetail->teamlist->list_tim ?? 'Team belum di daftarkan'}}</h6>
         <h6 class="card-title">{{ auth()->user()->karyawan->nik }} </h6>
+        <h6 class="card-title">Sektor {{ auth()->user()->teamdetail->teamlist->sektor[0]->sektor ?? 'Belum Terdaftar' }}</h6>
         <p class="mb-4 mt-4">Total Pekerjaan selesai dan Berita Acara pengeluaran material yang digunakan Bulan Ini : </p>
         <p>(Data yang dihitung hanyalah data yang sudah direkap)</p>
         {{-- <p class="mb-4">You have done <span class="fw-bold">72%</span> more sales today. Check your new badge in your profile.</p> --}}
@@ -145,7 +142,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex align-items-start justify-content-between">
-                                <h5 class="fw-semibold d-block mb-1">Pasang Baru</h5>
+                                <h5 class="fw-semibold d-block mb-1">Tiket {{ auth()->user()->jobdesk->jenistiket->nama_tiket }}</h5>
                             </div>
                             <span class="d-block mb-1 text-muted">Total</span>
                             <h3 class="card-title mb-2">{{ $hitungTeknisi[0]->tikettims_count ?? '0' }}</h3>
@@ -179,7 +176,7 @@
                                     <select name="jtiket" class="form-control">
                                         <option value="" disabled selected>-Pekerjaan-</option>
                                         @foreach ($jenistiket as $jt)
-                                            <option value="{{ $jt->nama_tiket }}">{{ $jt->nama_tiket }}</option>
+                                            <option value="{{ $jt->id }}">{{ $jt->nama_tiket }}</option> 
                                         @endforeach
                                     </select>
                                 </div>
@@ -212,7 +209,7 @@
                                                     <td>{{ $no++ }}</td>
                                                     <td>{{ $count->list_tim }}</td>
                                                     <td>
-                                                        {{ $count->tikettims->teamdetail->jobdesk->jenistiket->nama_tiket ?? 'Tim Kosong' }}
+                                                        {{ $count->teamdetail->jobdesk->jenistiket->nama_tiket ?? 'Tim Kosong' }}
                                                     </td>
                                                     <td>{{ $count->tikettims_count ?? '0' }}</td>
                                                     <td>{{ $count->ba_count ?? '0' }}</td>

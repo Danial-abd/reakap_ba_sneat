@@ -9,7 +9,7 @@ class Teamdetail extends Model
 {
     use HasFactory;
     protected $table    = 'teamdetail';
-    protected $fillable = ['id_karyawan','id_team','id_jobdesk','ket'];
+    protected $fillable = ['id_karyawan','id_team','id_jobdesk','id_sektor'];
     public $timestamps = false;
 
     public function scopeFilter($query, array $filters)
@@ -44,23 +44,24 @@ class Teamdetail extends Model
 
     public function beritaacara()
     {
-        return $this->hasOne(Beritaacara::class,'id_tim','id');
+        return $this->hasOne(Beritaacara::class,'id_tim','id_karyawan');
     }
 
     public function tikettim()
     {
-        return $this->belongsTo(Tikettim::class,'id_teknisi','id');
+        return $this->belongsTo(Tikettim::class,'id_teknisi','id_karyawan');
     }
 
     public function user()
     {
-        return $this->hasOne(User::class, 'role_t', 'id');
+        return $this->hasOne(User::class, 'role_t', 'id_karyawan');
     }
 
     public function tiketlist()
     {
         return $this->hasManyThrough(Tiketlist::class, Tikettim::class, 'id_teknisi','id','id','id');
     }
+
 
     
 }
