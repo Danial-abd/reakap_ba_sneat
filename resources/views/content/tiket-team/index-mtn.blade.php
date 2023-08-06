@@ -16,7 +16,7 @@
                 </td>
 
                 @if (auth()->user()->jobdesk->jobdesk == 'Master' || auth()->user()->jobdesk->jobdesk == 'Admin')
-                    <form action="{{ route('print.tiket-psb') }}" method="get" target="_blank" class="form-item"
+                    <form action="{{ route('print.tiket-mtn') }}" method="get" target="_blank" class="form-item"
                         enctype="multipart/form-data">
                         <td class="col-md-2">
                             @php
@@ -124,6 +124,7 @@
                                     <th>Pekerjaan</th>
                                     <th>Ket Tiket</th>
                                     <th>Tanggal Pekerjaan</th>
+                                    <th>detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,9 +141,18 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $t->no_tiket }}</td>
-                                        <td>{{ $t->pekerjaan }}</td>
+                                        <td>@foreach ($t->ggnpenyebab as $tg)
+                                            @if ($tg->pivot->ket == null)
+                                                {{ $tg->penyebab }}
+                                            @else
+                                                {{$tg->pivot->ket}}
+                                            @endif
+                                        @endforeach</td>
                                         <td>{{ $t->ket }}</td>
                                         <td>{{ $t->updated_at }}</td>
+                                        <td>
+                                            <a href="{{route('edt.detail', $t->id)}}" class="btn btn-sm btn-info" title="Detail"><span class="bx bx-info-circle"></span></a>
+                                    </td>
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -50,6 +50,10 @@ class Teamlist extends Model
         return $this->belongsTo(Beritaacara::class,'id','id_tl');
     }
 
+    public function saldos() {
+        return $this->belongsTo(saldomaterial::class,'id','id_tim');
+    }
+
 
 
     // public function saldomaterial() {

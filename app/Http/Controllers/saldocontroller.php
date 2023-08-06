@@ -7,7 +7,10 @@ use App\Models\Lmaterial;
 use App\Models\saldomaterial;
 use App\Models\Teamdetail;
 use App\Models\Teamlist;
+use App\Models\Tikettim;
+use PDF;
 use DateTime;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +25,11 @@ class saldocontroller extends Controller
         $jenistiket = Jenistiket::all();
         $blnakhir = $bln - 1;
 
+        $idpsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
         // dd($req->bulan);
 
-        $sisa = saldomaterial::where(function ($query) use ($blnakhir) {
-            $query->whereMonth('created_at', $blnakhir);
+        $sisa = saldomaterial::where(function ($query) use ($blnakhir, $idpsb) {
+            $query->whereMonth('created_at', $blnakhir)->whereIn('id_tim', $idpsb);
         })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->groupBy('id_tim')->orderBy('id_tim', 'ASC')->get();
 
         $teampsb = Teamlist::whereHas('teamdetail', function ($query) {
@@ -54,21 +58,28 @@ class saldocontroller extends Controller
                 $query->whereMonth('created_at', $blnakhir);
             })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah,  SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material', 'id_tim')->get();
 
-            $saldotim = saldomaterial::where(function ($query) use ($id) {
-                $query->where('id_tim', $id);
-            })->where(function ($query) use ($bln) {
-                $query->whereMonth('created_at', $bln);
-            })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah,  SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material', 'id_tim')->get();
+
 
             // dd($stimakhir->sum('total_jumlah'));
-
-            if ($stimakhir->sum('total_jumlah') > 0) {
-                $info = "Anda Belum Mengembalikan semua Material di bulan sebelumnya";
-                return view('content.saldom.saldo', compact('saldotim', 'team', 'tglnow', 'jenistiket', 'tdetail', 'teamlist', 'info'));
-            } else {
-                $info = null;
-                return view('content.saldom.saldo', compact('saldotim', 'team', 'tglnow', 'jenistiket', 'tdetail', 'teamlist', 'info'));
+            if (auth()->user()->teamdetail->id_jobdesk == 3) {
+                $saldotim = saldomaterial::where(function ($query) use ($id) {
+                    $query->where('id_tim', $id);
+                })->where(function ($query) use ($bln) {
+                    $query->whereMonth('created_at', $bln);
+                })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah,  SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material', 'id_tim')->get();
+                if ($stimakhir->sum('total_jumlah') > 0) {
+                    $info = "Anda Belum Mengembalikan semua Material di bulan sebelumnya";
+                    return view('content.saldom.saldo', compact('saldotim', 'team', 'tglnow', 'jenistiket', 'tdetail', 'teamlist', 'info'));
+                } else {
+                    $info = null;
+                    return view('content.saldom.saldo', compact('saldotim', 'team', 'tglnow', 'jenistiket', 'tdetail', 'teamlist', 'info'));
+                }
             }
+
+            $saldotim = saldomaterial::where(function ($query) use ($id) {
+                $query->where('id_tim', $id);
+            })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah,  SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material', 'id_tim')->get();
+            return view('content.saldom.saldo', compact('saldotim', 'team', 'tglnow', 'jenistiket', 'tdetail', 'teamlist'));
         }
 
         //pencarian bulan index
@@ -109,7 +120,7 @@ class saldocontroller extends Controller
         $nickname = 'sld';
         $tl = Teamlist::find($id);
 
-        $material = Lmaterial::all();
+        $material = Lmaterial::where('job', 'PSB')->get();
 
         $saldotim = saldomaterial::with('teamlist')->where(function ($query) use ($id) {
             $query->where('id_tim', $id);
@@ -126,7 +137,7 @@ class saldocontroller extends Controller
         }
 
         // dd($saldotim);
-        return view('content.saldom.update', compact('nickname', 'tl', 'saldotim', 'bln', 'material', 'tglnow'));
+        return view('content.saldom.update', compact('bln', 'nickname', 'tl', 'saldotim', 'bln', 'material', 'tglnow'));
     }
 
     public function update(Request $req, $id_tim, $bln)
@@ -218,7 +229,7 @@ class saldocontroller extends Controller
 
         $saldotim = saldomaterial::find($id);
         $teamlist = Teamlist::all();
-        $material = Lmaterial::all();
+        $material = Lmaterial::where('job', 'PSB')->get();
 
         $id_material = $saldotim->id_material;
         $id_tim = $saldotim->id_tim;
@@ -275,5 +286,215 @@ class saldocontroller extends Controller
         $hs = saldomaterial::find($id);
         $hs->delete();
         return redirect('/history-saldo');
+    }
+
+    public function index_total(Request $req)
+    {
+        $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $jtiket = Jenistiket::all();
+        $teampsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
+        $teamggn = Teamdetail::where('id_jobdesk', 7)->select('id_team')->groupBy('id_team')->pluck('id_team');
+        $teammtn = Teamdetail::where('id_jobdesk', 8)->select('id_team')->groupBy('id_team')->pluck('id_team');
+
+
+        if ($req->bulan == null) {
+            
+            $bulan = date('m');
+            $tiketggn = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 1)->count();
+            $tiketpsb = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 2)->count();
+            $tiketmtn = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 3)->count();
+
+            $saldopsb = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teampsb)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->get();
+            $saldoggn = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teamggn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+            $saldomtn = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teammtn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+
+            return view('content.saldom.ts', compact('tiketggn', 'tiketmtn', 'tiketpsb', 'saldopsb', 'saldomtn', 'saldoggn', 'jtiket', 'tglnow'));
+        
+        } else if ($req->bulan != null) {
+
+            $bulan = $req->bulan;
+            $tiketggn = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 1)->count();
+            $tiketpsb = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 2)->count();
+            $tiketmtn = Tikettim::whereMonth('created_at', $bulan)->where('id_j_tiket', 3)->count();
+
+            $saldopsb = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teampsb)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+            $saldoggn = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teamggn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+            $saldomtn = saldomaterial::where(function ($query) use ($bulan) {
+                $query->whereMonth('created_at', $bulan);
+            })->where('ket', null)->whereIn('id_tim', $teammtn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+
+
+            return view('content.saldom.ts', compact('tiketggn', 'tiketmtn', 'tiketpsb', 'saldopsb', 'saldomtn', 'saldoggn', 'jtiket', 'tglnow'));
+        }
+    }
+
+    public function pengembalian(Request $req)
+    {
+        $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
+        $blnnow = date('m');
+        $blnakhir = $blnnow - 1;
+
+        $idpsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
+
+        $sisa = saldomaterial::where(function ($query) use ($blnakhir, $idpsb) {
+            $query->whereMonth('created_at', $blnakhir)->whereIn('id_tim', $idpsb);
+        })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->groupBy('id_tim')->orderBy('id_tim', 'ASC')->get();
+
+        $teampsb = Teamlist::whereHas('teamdetail', function ($query) {
+            $query->where('id_jobdesk', 3);
+        })->get();
+
+
+        if ($req->bulan == null) {
+            $bln = date('m');
+            $saldo = saldomaterial::where(function ($query) use ($bln) {
+                $query->whereMonth('created_at', $bln);
+            })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna,  SUM(digunakan) as guna'))->groupBy('id_tim', 'id_material')->orderBy('id_tim', 'ASC')->filter(request(['search', 'bulan']))->get();
+            $pengembalian = saldomaterial::where(function ($query) use ($bln) {
+                $query->whereMonth('created_at', $bln);
+            })->where('ket', 'Pengembalian')->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah'))->groupBy('id_tim', 'id_material')->orderBy('id_tim', 'ASC')->filter(request(['search', 'bulan']))->get();
+
+            if ($sisa->sum('total_jumlah') > 0) {
+                $reminder = "Beberapa Tim masih belum melakukan pengembalian material";
+                return view('content.saldom.mk', compact('pengembalian', 'saldo', 'teampsb', 'tglnow', 'reminder'));
+            } else {
+                $reminder = null;
+                return view('content.saldom.mk', compact('pengembalian', 'saldo', 'teampsb', 'tglnow', 'reminder'));
+            }
+        } else if ($req->bulan != null) {
+            $bln = $req->bulan;
+            $saldo = saldomaterial::where(function ($query) use ($bln) {
+                $query->whereMonth('created_at', $bln);
+            })->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_tim', 'id_material')->orderBy('id_tim', 'ASC')->filter(request(['search', 'bulan']))->get();
+            $pengembalian = saldomaterial::where(function ($query) use ($bln) {
+                $query->whereMonth('created_at', $bln);
+            })->where('ket', 'Pengembalian')->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_tim', 'id_material')->orderBy('id_tim', 'ASC')->filter(request(['search', 'bulan']))->get();
+
+            if ($sisa->sum('total_jumlah') > 0) {
+                $reminder = "Beberapa Tim masih belum melakukan pengembalian material";
+                return view('content.saldom.mk', compact('pengembalian', 'saldo', 'teampsb', 'tglnow', 'reminder'));
+            } else {
+                $reminder = null;
+                return view('content.saldom.mk', compact('pengembalian', 'saldo', 'teampsb', 'tglnow', 'reminder'));
+            }
+        }
+    }
+
+    public function print_mk(Request $req)
+    {
+        $bln = $req->bulan;
+
+        if ($bln == 1) {
+            $carbon = "Januari";
+        } else if ($bln == 2) {
+            $carbon = "Februari";
+        } else if ($bln == 3) {
+            $carbon = "Maret";
+        } else if ($bln == 4) {
+            $carbon = "April";
+        } else if ($bln == 5) {
+            $carbon = "Mei";
+        } else if ($bln == 6) {
+            $carbon = "Juni";
+        } else if ($bln == 7) {
+            $carbon = "Juli";
+        } else if ($bln == 8) {
+            $carbon = "Agustus";
+        } else if ($bln == 9) {
+            $carbon = "September";
+        } else if ($bln == 10) {
+            $carbon = "Oktober";
+        } else if ($bln == 11) {
+            $carbon = "November";
+        } else if ($bln == 12) {
+            $carbon = "Desember";
+        }
+
+        $carbon = Carbon::createFromDate(null, $bln, null)->isoFormat('MMMM');
+        $teampsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
+
+        $saldopsb = saldomaterial::whereMonth('created_at', $bln)->whereIn('id_tim', $teampsb)->select('id_tim', 'id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_tim', 'id_material')->filter(request(['search', 'bulan']))->havingRaw('SUM(jumlah - digunakan) > 0')->get();
+
+        $teampsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
+
+        $team = Teamlist::whereIn('id', $teampsb)->get();
+
+        // dd($team);
+
+        // dd($saldopsb);
+        $pdfname = 'Pengembalian Material bulan-' . $carbon . '.pdf';
+        $name = 'Pengembalian Material';
+        $pdf = PDF::loadview('content.saldom.pk', ['team' => $team, 'bln' => $carbon, 'saldopsb' => $saldopsb, 'pdfname' => $name])->setPaper('A4', 'potrait');
+        return $pdf->stream($pdfname);
+    }
+
+    public function print_tm(Request $req)
+    {
+        $bln = $req->bulan;
+        if ($bln == 1) {
+            $carbon = "Januari";
+        } else if ($bln == 2) {
+            $carbon = "Februari";
+        } else if ($bln == 3) {
+            $carbon = "Maret";
+        } else if ($bln == 4) {
+            $carbon = "April";
+        } else if ($bln == 5) {
+            $carbon = "Mei";
+        } else if ($bln == 6) {
+            $carbon = "Juni";
+        } else if ($bln == 7) {
+            $carbon = "Juli";
+        } else if ($bln == 8) {
+            $carbon = "Agustus";
+        } else if ($bln == 9) {
+            $carbon = "September";
+        } else if ($bln == 10) {
+            $carbon = "Oktober";
+        } else if ($bln == 11) {
+            $carbon = "November";
+        } else if ($bln == 12) {
+            $carbon = "Desember";
+        }
+
+        $teampsb = Teamdetail::where('id_jobdesk', 3)->select('id_team')->groupBy('id_team')->pluck('id_team');
+        $teamggn = Teamdetail::where('id_jobdesk', 7)->select('id_team')->groupBy('id_team')->pluck('id_team');
+        $teammtn = Teamdetail::where('id_jobdesk', 8)->select('id_team')->groupBy('id_team')->pluck('id_team');
+
+        $saldopsb = saldomaterial::whereMonth('created_at', $bln)
+            ->where('ket', null)->whereIn('id_tim', $teampsb)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->filter(request(['search', 'bulan']))->get();
+        $saldoggn = saldomaterial::whereMonth('created_at', $bln)
+        ->where('ket', null)->whereIn('id_tim', $teamggn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->get();
+        $saldomtn = saldomaterial::whereMonth('created_at', $bln)
+        ->where('ket', null)->whereIn('id_tim', $teammtn)->select('id_material', DB::raw('SUM(jumlah - digunakan) as total_jumlah, SUM(jumlah) as jumlah, SUM(digunakan) as guna'))->groupBy('id_material')->get();
+
+        $tiketggn = Tikettim::whereMonth('created_at', $bln)->where('id_j_tiket', 1)->count();
+        $tiketpsb = Tikettim::whereMonth('created_at', $bln)->where('id_j_tiket', 2)->count();
+        $tiketmtn = Tikettim::whereMonth('created_at', $bln)->where('id_j_tiket', 3)->count();
+
+        // dd($saldopsb);
+        $pdfname = 'Total Material-' . $carbon . '.pdf';
+        $name = 'Total Material Pekerjaan';
+        $pdf = PDF::loadview('content.saldom.tm', [
+            'tiketpsb' => $tiketpsb,
+            'tiketggn' => $tiketggn,
+            'tiketmtn' => $tiketmtn,
+            'bln' => $carbon,
+            'saldopsb' => $saldopsb,
+            'saldoggn' => $saldoggn,
+            'saldomtn' => $saldomtn,
+            'pdfname' => $name
+        ])->setPaper('A4', 'potrait');
+        return $pdf->stream($pdfname);
     }
 }

@@ -9,7 +9,7 @@ class Lmaterial extends Model
 {
     use HasFactory;
     protected   $table    = 'material';
-    protected   $fillable = ['kd_material','nama_material'];
+    protected   $fillable = ['kd_material','nama_material','job'];
     // protected   $primaryKey = 'kd_material';
     public      $timestamps = false;
 

@@ -49,14 +49,17 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if (auth()->user()->teamdetail->id_jobdesk == 3)
                 <div class="alert alert-info" role="alert">
                     Harap dilakukan pengembalian ke kantor jika ada material yang belum habis di akhir bulan!!
                 </div>
-                @if ($info != null)
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>Reminder!!</strong> {{ $info }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    @if ($info != null)
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Reminder!!</strong> {{ $info }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
                 @endif
             </div>
     @endif
@@ -138,12 +141,14 @@
                     </div>
                 @endif
 
+
                 @if ($reminder != null)
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <strong>Reminder!!</strong> {{ $reminder }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
+
 
                 <div class="card accordion-item mb-4">
                     <h2 class="accordion-header" id="headingOne">
@@ -214,71 +219,72 @@
 
                 @for ($i = 0; $i < $teampsb->count(); $i++)
                     {{-- @for ($y = 0; $y < $tdetail->count(); $y++) --}}
-                        {{-- @if ($team[$i]->id == $tdetail[$y]->id) --}}
-                            <h5 class="pd-1 mb-4">
-                                {{-- {{ $tdetail[$y]->jobdesk->jenistiket->nama_tiket }} --}}
+                    {{-- @if ($team[$i]->id == $tdetail[$y]->id) --}}
+                    <h5 class="pd-1 mb-4">
+                        {{-- {{ $tdetail[$y]->jobdesk->jenistiket->nama_tiket }} --}}
+                    </h5>
+
+                    <div class="card mb-4 table-responsive">
+                        <div class="card-header d-flex align-item-start justify-content-between">
+                            <h5 class="align-middle">
+                                {{ $teampsb[$i]->list_tim }}
                             </h5>
 
-                            <div class="card mb-4 table-responsive">
-                                <div class="card-header d-flex align-item-start justify-content-between">
-                                    <h5 class="align-middle">
-                                        {{ $teampsb[$i]->list_tim }}
-                                    </h5>
-                                    
-                                    <a href="{{ route('edt.sld', [$teampsb[$i]->id , $bulan]) }}" class="btn mt-0 btn-primary">Input
-                                        Pengembalian Material</a>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive text-nowrap">
-                                        <table class="table">
-                                            <thead class="table-light">
+                            <a href="{{ route('edt.sld', [$teampsb[$i]->id, $bulan]) }}"
+                                class="btn mt-0 btn-primary">Input
+                                Pengembalian Material</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive text-nowrap">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nama Material</th>
+                                            <th>Jumlah</th>
+                                            <th>Digunakan</th>
+                                            <th>Saldo</th>
+                                            <th>Ket</th>
+                                        </tr>
+                                    </thead>
+                                    {{-- @foreach ($saldo as $saldo) --}}
+                                    @for ($q = 0; $q < $saldo->count(); $q++)
+                                        @if ($saldo[$q]->id_tim == $teampsb[$i]->id)
+                                            <tbody class="table-border-bottom-0">
                                                 <tr>
-                                                    <th>Nama Material</th>
-                                                    <th>Jumlah</th>
-                                                    <th>Digunakan</th>
-                                                    <th>Saldo</th>
-                                                    <th>Ket</th>
+                                                    <td>
+                                                        {{ $saldo[$q]->material->nama_material }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $saldo[$q]->jumlah }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $saldo[$q]->guna }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $saldo[$q]->total_jumlah }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $saldo[$q]->total_jumlah == '0' ? 'Material Habis' : 'Pengembalian' }}
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            {{-- @foreach ($saldo as $saldo) --}}
-                                            @for ($q = 0; $q < $saldo->count(); $q++)
-                                                @if ($saldo[$q]->id_tim == $teampsb[$i]->id)
-                                                    <tbody class="table-border-bottom-0">
-                                                        <tr>
-                                                            <td>
-                                                                {{ $saldo[$q]->material->nama_material }}
-                                                            </td>
-                                                            <td>
-                                                                {{ $saldo[$q]->jumlah }}
-                                                            </td>
-                                                            <td>
-                                                                {{ $saldo[$q]->guna }}
-                                                            </td>
-                                                            <td>
-                                                                {{ $saldo[$q]->total_jumlah }}
-                                                            </td>
-                                                            <td>
-                                                                {{ $saldo[$q]->total_jumlah == '0' ? 'Material Habis' : 'Pengembalian' }}
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                @endif
-                                            @endfor
-                                            {{-- @endforeach --}}
-                                            @if ($saldo->count() == 0)
-                                                <tbody class="table-border-bottom-0">
-                                                    <tr>
-                                                        <td colspan="5" align="center">
-                                                            Material Kosong
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            @endif
-                                        </table>
-                                    </div>
-                                </div>
+                                            </tbody>
+                                        @endif
+                                    @endfor
+                                    {{-- @endforeach --}}
+                                    @if ($saldo->count() == 0)
+                                        <tbody class="table-border-bottom-0">
+                                            <tr>
+                                                <td colspan="5" align="center">
+                                                    Material Kosong
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    @endif
+                                </table>
                             </div>
-                        {{-- @endif --}}
+                        </div>
+                    </div>
+                    {{-- @endif --}}
                     {{-- @endfor --}}
                 @endfor
             </div>

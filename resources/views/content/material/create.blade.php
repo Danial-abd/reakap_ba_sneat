@@ -18,22 +18,37 @@
                         @csrf
 
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Kode Material</label>
+                            <label class="col-sm-2 col-form-label">Kode Material</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name='kd_material' id="basic-default-name"
                                     placeholder="Masukkan Kode Material">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Material</label>
+                            <label class="col-sm-2 col-form-label">Nama Material</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name='nama_material' id="basic-default-name"
                                     placeholder="Masukkan Nama Material">
                             </div>
                         </div>
 
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Penggunaan</label>
+                            <div class="col-sm-10">
+                                <select name="job[]" class="form-control">
+                                    <option value="" disabled selected>--Pilih Penyebab--</option>
+                                    <option value="PSB">PSB</option>
+                                    <option value="GGN">GGN</option>
+                                    <option value="MTN">MTN</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="material"></div>
+
                         <div class="row justify-content-end">
                             <div class="col-sm-10 gap-3 d-flex">
+                                <button type="button" class="addmaterial btn btn-info">Tambah Penggunaan</button>
                                 <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
                                 <a href="{{ route('lm') }}" class="btn btn-outline-danger ">Batal</a>
                             </div>
@@ -44,5 +59,20 @@
         </div>
     </div>
     </div>
+    <script>
+        $('.addmaterial').on('click', function() {
+            addmaterial();
+        });
+
+        function addmaterial() {
+            // ++i;
+            var material =
+                '<div class="row mb-3"> <label class="col-sm-2 col-form-label" ></label><div class="col-sm"><select name="job[]" class="form-control"><option value="" disabled selected>--Pilih Penyebab--</option><option value="PSB">PSB</option><option value="GGN">GGN</option><option value="MTN">MTN</option></select></div><div class="col-auto"><button type="button" class="hapus btn btn-danger">Hapus</button></div></div>';
+            $('.material').append(material);
+        };
+        $('.hapus').live('click', function() {
+            $(this).parent().parent().remove();
+        });
+    </script>
     {{-- </div> --}}
 @endsection

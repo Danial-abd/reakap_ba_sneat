@@ -44,7 +44,7 @@
                     </div>
                     <div class="card-body">
                         @csrf
-                        
+
                         @if (auth()->user()->jobdesk->detail_kerja == 1)
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Penyebab Gangguan</label>
@@ -64,8 +64,29 @@
                             <div class="row mb-3" id="inputGgn" style="display: none;">
                                 <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
                                 <div class="col-sm">
-                                    <input type="text" id="ket_ggn" class="form-control" name='ket_ggn' id="basic-default-name"
-                                        placeholder="Masukkan Penyebab Gangguan">
+                                    <input type="text" id="ket_ggn" class="form-control" name='ket_ggn'
+                                        id="basic-default-name" placeholder="Masukkan Penyebab Gangguan">
+                                </div>
+                            </div>
+                        @endif
+                        @if (auth()->user()->jobdesk->detail_kerja == 3)
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Pekerjaan</label>
+                                <div class="col-sm-10">
+                                    <select name="id_ggn" id="ggn" class="form-control">
+                                        <option value="" disabled selected>--Pilih Pekerjaan--</option>
+                                        @foreach ($penyebab as $index => $penyebab)
+                                            <option value="{{ $penyebab->id }}">{{ $penyebab->penyebab }}</option>
+                                        @endforeach
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="inputGgn" style="display: none;">
+                                <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                                <div class="col-sm">
+                                    <input type="text" id="ket_ggn" class="form-control" name='ket_ggn'
+                                        id="basic-default-name" placeholder="Masukkan Penyebab Gangguan">
                                 </div>
                             </div>
                         @endif
@@ -96,6 +117,32 @@
                                 </div>
                             </div>
                         @endif
+                        @if (auth()->user()->jobdesk->detail_kerja == 3)
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">No Tiket</label>
+                            <div class="col col-sm">
+                                <input type="text" class="form-control  @error('no_tiket') is-invalid @enderror"
+                                    name='no_tiket' id="basic-default-name" placeholder="Masukkan No Tiket">
+                                @error('no_tiket')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan no tiket' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Nama ODP / ODC</label>
+                            <div class="col-sm">
+                                <input type="text" class="form-control  @error('nama_pic') is-invalid @enderror"
+                                    name='nama_pic' id="basic-default-name" placeholder="Masukkan Nama ODP / ODC">
+                                @error('nama_pic')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nama ODP' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        @else
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">No Tiket</label>
                             <div class="col col-sm">
@@ -165,6 +212,8 @@
                                 @enderror
                             </div>
                         </div>
+                        @endif
+                        
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Ket</label>
                             <div class="col-sm-10">
@@ -292,58 +341,59 @@
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5>Dokumentasi</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row justify-content-md-center mb-4 ">
-                            <div class="col mb-4">
-                                <div class="row">
-                                    <label class="form-label">Foto Lokasi</label>
+                        <div class="card-body">
+                            <div class="row justify-content-md-center mb-4 ">
+                                <div class="col mb-4">
+                                    <div class="row">
+                                        <label class="form-label">Foto Lokasi</label>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="lok"
+                                            width="150" height="250">
+                                    </div>
+                                    <input type="file" id="actual-btn" name="f_lokasi" hidden accept="image/*"
+                                        onchange="document.getElementById('lok').src = window.URL.createObjectURL(this.files[0])">
+                                    <label class="btn btn-primary" for="actual-btn"><span
+                                            class="tf-icons bx bx-camera"></span></label>
                                 </div>
-                                <div class="row mb-2">
-                                    <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="lok"
-                                        width="150" height="250">
+
+                                <div class="col mb-4">
+                                    <div class="row">
+                                        <label class="form-label">Foto Progress</label>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="prog"
+                                            width="150" height="250" alt="">
+                                    </div>
+                                    <input type="file" id="btn-progress" name="f_progress" hidden accept="image/*"
+                                        onchange="document.getElementById('prog').src = window.URL.createObjectURL(this.files[0])">
+                                    <label class="btn btn-primary" for="btn-progress"><span
+                                            class="tf-icons bx bx-camera"></span></label>
                                 </div>
-                                <input type="file" id="actual-btn" name="f_lokasi" hidden accept="image/*"
-                                    onchange="document.getElementById('lok').src = window.URL.createObjectURL(this.files[0])">
-                                <label class="btn btn-primary" for="actual-btn"><span
-                                        class="tf-icons bx bx-camera"></span></label>
+
+                                <div class="col mb-4">
+                                    <div class="row">
+                                        <label class="form-label">Laporan Telegram</label>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="tele"
+                                            width="150" height="250" alt="">
+                                    </div>
+                                    <input type="file" id="btn-telegram" name="f_lap_tele" hidden accept="image/*"
+                                        onchange="document.getElementById('tele').src = window.URL.createObjectURL(this.files[0])">
+                                    <label class="btn btn-primary" for="btn-telegram"><span
+                                            class="tf-icons bx bx-camera"></span></label>
+                                </div>
                             </div>
 
-                            <div class="col mb-4">
-                                <div class="row">
-                                    <label class="form-label">Foto Progress</label>
+                            <div class="row justify-content-between">
+                                <div class="col-sm-10 gap-3 d-flex">
+                                    <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
+                                    <a href="{{ route('tiket') }}" class="btn btn-outline-danger ">Batal</a>
                                 </div>
-                                <div class="row mb-2">
-                                    <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="prog"
-                                        width="150" height="250" alt="">
-                                </div>
-                                <input type="file" id="btn-progress" name="f_progress" hidden accept="image/*"
-                                    onchange="document.getElementById('prog').src = window.URL.createObjectURL(this.files[0])">
-                                <label class="btn btn-primary" for="btn-progress"><span
-                                        class="tf-icons bx bx-camera"></span></label>
-                            </div>
-
-                            <div class="col mb-4">
-                                <div class="row">
-                                    <label class="form-label">Laporan Telegram</label>
-                                </div>
-                                <div class="row mb-2">
-                                    <img src="{{ asset('assets/img/illustrations/nopic.png') }}" id="tele"
-                                        width="150" height="250" alt="">
-                                </div>
-                                <input type="file" id="btn-telegram" name="f_lap_tele" hidden accept="image/*"
-                                    onchange="document.getElementById('tele').src = window.URL.createObjectURL(this.files[0])">
-                                <label class="btn btn-primary" for="btn-telegram"><span
-                                        class="tf-icons bx bx-camera"></span></label>
                             </div>
                         </div>
-
-                        <div class="row justify-content-between">
-                            <div class="col-sm-10 gap-3 d-flex">
-                                <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
-                                <a href="{{ route('tiket') }}" class="btn btn-outline-danger ">Batal</a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </form>
         </div>

@@ -80,29 +80,25 @@ class Analytics extends Controller
     })->count();
 
     //total
-    $inputtotal = Tikettim::where(function ($query) use ($bln) {
-      $query->whereMonth('created_at', $bln);
-    })->where('status','Approved')->orWhere('status', null)->count();
+    $inputtotal = Tikettim::whereMonth('updated_at', $bln)->where('status', 'Approved')->count();
 
-    $updatedtotal = Tikettim::where(function ($query) use ($bln) {
-      $query->whereMonth('created_at', $bln);
-    })->count();
-
-    $batotal = Beritaacara::where(function ($query) use ($bln) {
-      $query->whereMonth('created_at', $bln);
-    })->count();
+    // $updatedtotal = Tikettim::where(function ($query) use ($bln) {
+    //   $query->whereMonth('created_at', $bln);
+    // })->count();
+    
+    $batotal = Beritaacara::whereMonth('created_at', $bln)->count();
 
 
     //hitung jumlah
     $tim = auth()->user()->teamdetail->teamlist->list_tim ?? '';
 
     $jumlah = Teamlist::withCount([
-      'ba' => function (Builder $query) use ($bln) {
+      'ba' => function ($query) use ($bln) {
         $query->whereMonth('updated_at', $bln);
       },
-      'tikettims'  => function (Builder $query) use ($bln) {
+      'tikettims'  => function ($query) use ($bln) {
         $query->whereMonth('updated_at', $bln);
-      }, 'rekapbas'  => function (Builder $query) use ($bln) {
+      }, 'rekapbas'  => function ( $query) use ($bln) {
         $query->whereMonth('updated_at', $bln);
       }
     ])->filter(request(['jtiket']));
@@ -115,7 +111,7 @@ class Analytics extends Controller
     })->get();
 
     //tabel
-    $hitung = Teamlist::withCount(['ba' => function (Builder $query) use ($bln) {
+    $hitung = Teamlist::withCount(['ba' => function ($query) use ($bln) {
       $query->whereMonth('updated_at', $bln);
     }, 'tikettims'  => function (Builder $query) use ($bln) {
       $query->whereMonth('updated_at', $bln);
@@ -139,7 +135,7 @@ class Analytics extends Controller
       'inputmtn',
       'updatedmtn',
       'inputtotal',
-      'updatedtotal',
+      // 'updatedtotal',
       'hitung',
       'jenistiket',
       'hitungTeknisi',

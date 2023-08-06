@@ -45,10 +45,19 @@ class BeritaacaraController extends Controller
     {
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $teamlist = Teamlist::all();
-        $material = Lmaterial::all();
         $teamdetail = Teamdetail::with(['teamlist'])->orderBy('id_team', 'ASC')->get();
-
-        return view('content.ba.create', compact('teamdetail', 'teamlist', 'tglnow', 'material'));
+        if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '1'){
+            $material = Lmaterial::where('job', 'GGN')->get();
+            return view('content.ba.create', compact('teamdetail', 'teamlist', 'tglnow', 'material'));
+        }
+        else if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '2'){
+            $material = Lmaterial::where('job', 'PSB')->get();
+            return view('content.ba.create', compact('teamdetail', 'teamlist', 'tglnow', 'material'));
+        }
+        else if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '3'){
+            $material = Lmaterial::where('job', 'MTN')->get();
+            return view('content.ba.create', compact('teamdetail', 'teamlist', 'tglnow', 'material'));
+        }
     }
 
     public function show($id)
@@ -175,8 +184,19 @@ class BeritaacaraController extends Controller
         $tglnow = Carbon::now()->isoFormat('dddd, D MMMM Y');
         $teamdetail = Teamdetail::with(['teamlist'])->orderBy('id_team', 'ASC')->get();
         $beritaacara = Beritaacara::find($id);
-        $material = Lmaterial::all();
-        return view('content.ba.edit', compact('material', 'teamdetail', 'beritaacara', 'tglnow'));
+        if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '1'){
+            $material = Lmaterial::where('job', 'GGN')->get();
+            return view('content.ba.edit', compact('material', 'teamdetail', 'beritaacara', 'tglnow'));
+        }
+        else if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '2'){
+            $material = Lmaterial::where('job', 'PSB')->get();
+            return view('content.ba.edit', compact('material', 'teamdetail', 'beritaacara', 'tglnow'));
+        }
+        else if (auth()->user()->teamdetail->jobdesk->jenistiket->id == '3'){
+            $material = Lmaterial::where('job', 'MTN')->get();
+            return view('content.ba.edit', compact('material', 'teamdetail', 'beritaacara', 'tglnow'));
+        }
+        
     }
 
     public function update(Request $request, $id)

@@ -60,4 +60,9 @@ class saldomaterial extends Model
     {
         return $this->belongsTo(Teamlist::class,'id_tim','id');
     }
+
+    public function teamlists()
+    {
+        return $this->hasOne(Teamlist::class, 'id', 'id_tim');
+    }
 }

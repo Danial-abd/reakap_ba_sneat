@@ -139,8 +139,9 @@
                                         <th>Status Tiket</th>
                                     @endif
                                     <th>No Tiket</th>
-                                    <th>Nama PIC</th>
+
                                     @if (auth()->user()->jobdesk->detail_kerja == 1)
+                                        <th>Nama PIC</th>
                                         <th>Sektor</th>
                                         <th>Penyebab</th>
                                         <th>Penyebab Lainnya</th>
@@ -149,12 +150,15 @@
                                         <th>Aksi</th>
                                     @endif
                                     @if (auth()->user()->jobdesk->detail_kerja == 2)
+                                        <th>Nama PIC</th>
                                         <th>Sektor</th>
                                         <th>Ket</th>
                                         <th>Tanggal Upload</th>
                                         <th>Aksi</th>
                                     @endif
                                     @if (auth()->user()->jobdesk->detail_kerja == 3)
+                                        <th>Nama ODP / ODC</th>
+                                        <th>Sektor</th>
                                         <th>Ket</th>
                                         <th>Tanggal Upload</th>
                                         <th>Aksi</th>
@@ -197,6 +201,9 @@
                                                 {{ $t->ket }}
                                             </td>
                                         @endif
+                                        @if (auth()->user()->jobdesk->detail_kerja == 3)
+                                            <td>{{ $t->ket }}</td>
+                                        @endif
 
                                         <td>{{ $t->updated_at }}</td>
                                         <td>
@@ -205,7 +212,7 @@
                                                     data-bs-toggle="dropdown"><i
                                                         class="bx bx-dots-vertical-rounded"></i></button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="{{ route('edt.tiket', $t->id) }}"><i
+                                                    <a class="dropdown-item" href="{{ route('edt.tiket', [$t->id, $bulan]) }}"><i
                                                             class="bx bx-edit-alt me-1"></i>
                                                         Edit</a>
                                                     <a class="dropdown-item" href="{{ route('dlt.tiket', $t->id) }}"><i

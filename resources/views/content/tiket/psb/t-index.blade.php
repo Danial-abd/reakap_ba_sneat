@@ -247,7 +247,6 @@
                                         <td>{{ $acc->created_at }}</td>
                                         <td>
                                                 <a href="{{route('edt.detail', $acc->id)}}" class="btn btn-sm btn-info" title="Detail"><span class="bx bx-info-circle"></span></a>
-                                            
                                         </td>
                                     </tr>
                                 @empty

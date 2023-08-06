@@ -85,19 +85,19 @@
         "slug": "rba", 
         "submenu": [
           {
-            "url" : "/rba",
+            "url" : "/rba-psb",
             "name": "Rekap Berita Acara Pasang Baru",
             "slug": "rba-psb"
           },
           {
-            "url" : "/rba",
+            "url" : "/rba-ggn",
             "name": "Rekap Berita Acara Gangguan",
-            "slug": ""
+            "slug": "rba-ggn"
           },
           {
-            "url" : "/rba",
+            "url" : "/rba-mtn",
             "name": "Rekap Berita Acara Maintenance",
-            "slug": ""
+            "slug": "rba-mtn"
           }
         ]
       },
@@ -107,12 +107,12 @@
         "slug": "mtl", 
         "submenu": [
           {
-            "url" : "/material-total",
+            "url" : "/total_material",
             "name": "Total Material",
             "slug": "mtl-total"
           },
           {
-            "url" : "/material-pengembalian",
+            "url" : "/material_pengembalian",
             "name": "Pengembalian",
             "slug": "mtl-kembali"
           }
@@ -123,13 +123,19 @@
         "url" : "/psb-banyak",
         "name": "Tim Pemasangan Terbanyak",
         "icon": "menu-icon tf-icons bx",
-        "slug": ""
+        "slug": "ps-b"
       },
       {
         "url" : "/psb-performance",
         "name": "Performa Pasang Baru",
         "icon": "menu-icon tf-icons bx",
-        "slug": ""
+        "slug": "ps-pf"
+      },
+      {
+        "url" : "/ggn-penyebab",
+        "name": "Penyebab Gangguan",
+        "icon": "menu-icon tf-icons bx",
+        "slug": "gp"
       }
     ]
   }

@@ -64,16 +64,16 @@
         <table class="table table-bordered">
             <tr>
                 <th>No</th>
-                    <th>Nama Tim</th>
-                    <th>Sektor</th>
-                    <th>No Tiket</th>
-                    <th>No Internet</th>
-                    <th>Nama PIC</th>
-                    <th>No PIC</th>
-                    <th>alamat</th>
-                    <th>Ket</th>
-                    <th>Tanggal Upload</th>
-
+                <th>Nama Tim</th>
+                <th>Sektor</th>
+                <th>No Tiket</th>
+                <th>No Internet</th>
+                <th>Nama PIC</th>
+                <th>No PIC</th>
+                <th>alamat</th>
+                <th>Penyebab Gangguan</th>
+                <th>Ket</th>
+                <th>Tanggal Upload</th>
             </tr>
             @php
                 $no = 1;
@@ -82,19 +82,28 @@
                 @foreach ($tiktim as $t)
                     <tr>
                         <td>{{ $no++ }}</td>
-                            <td>{{ $t->teamlist->list_tim }}</td>
-                            <td>
-                                @foreach ($t->teamdetail->teamlist->sektor as $tl)
-                                    {{ $tl->sektor }}
-                                @endforeach
-                            </td>
-                            <td>{{ $t->no_tiket }}</td>
-                            <td>{{ $t->no_tiket }}</td>
-                            <td>{{ $t->nama_pic }}</td>
-                            <td>{{ $t->no_pic }}</td>
-                            <td>{{ $t->alamat }}</td>
-                            <td>{{ $t->ket }}</td>
-                            <td>{{ $t->updated_at }}</td>
+                        <td>{{ $t->teamlist->list_tim }}</td>
+                        <td>
+                            @foreach ($t->teamdetail->teamlist->sektor as $tl)
+                                {{ $tl->sektor }}
+                            @endforeach
+                        </td>
+                        <td>{{ $t->no_tiket }}</td>
+                        <td>{{ $t->no_tiket }}</td>
+                        <td>{{ $t->nama_pic }}</td>
+                        <td>{{ $t->no_pic }}</td>
+                        <td>{{ $t->alamat }}</td>
+                        <td>
+                            @foreach ($t->ggnpenyebab as $tg)
+                                @if ($tg->pivot->ket == null)
+                                    {{ $tg->penyebab }}
+                                @else
+                                    {{ $tg->pivot->ket }}
+                                @endif
+                            @endforeach
+                        </td>
+                        <td>{{ $t->ket }} </td>
+                        <td>{{ $t->updated_at }}</td>
                     </tr>
                 @endforeach
             </tbody>

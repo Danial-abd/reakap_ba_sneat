@@ -101,7 +101,7 @@
                                     <h5 class="fw-semibold d-block mb-1">Total</h5>
                                 </div>
                                 <span class="d-block mb-1 text-muted">Data Laporan Pekerjaan Aman</span>
-                                <h3 class="card-title mb-2">{{ $inputtotal }}</h3>
+                                <h3 class="card-title mb-2">{{ $inputtotal+$updatedggn+$updatedmtn }}</h3>
                                 <span class="d-block mb-1 text-muted">Berita Acara</span>
                                 <h3 class="card-title mb-2">{{ $batotal }}</h3>
                             </div>

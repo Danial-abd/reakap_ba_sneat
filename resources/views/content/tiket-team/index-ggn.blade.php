@@ -16,7 +16,7 @@
                 </td>
 
                 @if (auth()->user()->jobdesk->jobdesk == 'Master' || auth()->user()->jobdesk->jobdesk == 'Admin')
-                    <form action="{{ route('print.tiket-psb') }}" method="get" target="_blank" class="form-item"
+                    <form action="{{ route('print.tiket-ggn') }}" method="get" target="_blank" class="form-item"
                         enctype="multipart/form-data">
                         <td class="col-md-2">
                             @php
@@ -126,6 +126,7 @@
                                     <th>Penyebab Gangguan</th>
                                     <th>Ket Tiket</th>
                                     <th>Tanggal Perbaikan</th>
+                                    <th>Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,6 +157,9 @@
 
                                         <td>{{ $t->ket }}</td>
                                         <td>{{ $t->updated_at }}</td>
+                                        <td>
+                                            <a href="{{route('edt.detail', $t->id)}}" class="btn btn-sm btn-info" title="Detail"><span class="bx bx-info-circle"></span></a>
+                                    </td>
 
                                     </tr>
                                 @endforeach

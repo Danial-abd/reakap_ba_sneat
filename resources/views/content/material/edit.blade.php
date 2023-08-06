@@ -31,6 +31,17 @@
                                     placeholder="Masukkan Nama Material" value="{{$material->nama_material}}">
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Penggunaan</label>
+                            <div class="col-sm-10">
+                                <select name="job" class="form-control">
+                                    <option value="" disabled selected>--Pilih Penyebab--</option>
+                                    <option value="PSB" {{ $material->job == 'PSB' ? 'selected' : '' }} >PSB</option>
+                                    <option value="GGN" {{ $material->job == 'GGN' ? 'selected' : '' }}>GGN</option>
+                                    <option value="MTN" {{ $material->job == 'MTN' ? 'selected' : '' }}>MTN</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="row justify-content-end">
                             <div class="col-sm-10 gap-3 d-flex">

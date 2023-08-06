@@ -25,7 +25,16 @@ class Lmaterial extends Controller
 
     public function store(Request $req)
     {
-        ModelMaterial::create($req->except(['_token', 'submit']));
+        $data = $req->all();
+
+        foreach ($data['job'] as $index => $value){
+            ModelMaterial::create([
+                'kd_material' => $req->kd_material,
+                'nama_material' => $req->nama_material,
+                'job' => $data['job'][$index],
+            ]);
+        }    
+        
         return redirect('lmaterial');
     }
 

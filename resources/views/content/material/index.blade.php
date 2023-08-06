@@ -45,6 +45,8 @@
                                 <th>NO</th>
                                 <th>Kode Material</th>
                                 <th>Nama Material</th>
+                                <th>Penggunaan</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
@@ -56,6 +58,9 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $mm->kd_material }}</td>
                                     <td>{{ $mm->nama_material }}</td>
+                                    <td>
+                                        {{ $mm->job }}
+                                    </td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

@@ -13,6 +13,7 @@ use App\Http\Controllers\TeamdetailController;
 use App\Http\Controllers\TeamlistController;
 use App\Http\Controllers\TiketlistController;
 use App\Http\Controllers\TikettimController;
+use App\Models\saldomaterial;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -163,12 +164,20 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin']], function () {
     Route::get('/tiket_team/print', [TikettimController::class, 'print'])->name('print.tiket');
 
     //rekap berita acara
+    Route::get('/rba-psb', [RekapBaController::class, 'index_psb'])->name('rba-psb');
+    Route::get('/rba-ggn', [RekapBaController::class, 'index_ggn'])->name('rba-ggn');
+    Route::get('/rba-mtn', [RekapBaController::class, 'index_mtn'])->name('rba-mtn');
     Route::get('/rba/print', [RekapBaController::class, 'print'])->name('print.rba');
-
+    Route::get('/rba/print-psb', [RekapBaController::class, 'print_psb'])->name('print.rba-psb');
+    Route::get('/rba/print-ggn', [RekapBaController::class, 'print_ggn'])->name('print.rba-ggn');
+    Route::get('/rba/print-mtn', [RekapBaController::class, 'print_mtn'])->name('print.rba-mtn');
+    
     Route::get('/tiket_team-psb', [TikettimController::class, 'index_psb'])->name('tiket-psb');
-    Route::get('tiket_print-psb', [TikettimController::class, 'print_psb'])->name('print.tiket-psb');
     Route::get('/tiket_team-ggn', [TikettimController::class, 'index_ggn'])->name('tiket-ggn');
     Route::get('/tiket_team-mtn', [TikettimController::class, 'index_mtn'])->name('tiket-mtn');
+    Route::get('tiket_print-psb', [TikettimController::class, 'print_psb'])->name('print.tiket-psb');
+    Route::get('tiket_print-ggn', [TikettimController::class, 'print_ggn'])->name('print.tiket-ggn');
+    Route::get('tiket_print-mtn', [TikettimController::class, 'print_mtn'])->name('print.tiket-mtn');
 
     Route::get('/saldo_edit/{id}/{bln}', [saldocontroller::class, 'edit'])->name('edt.sld');
     Route::post('/saldo_up/{id_tim}/{bln}', [saldocontroller::class, 'update'])->name('up.sld');
@@ -176,6 +185,18 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin']], function () {
     Route::get('/history-edit/{id}', [saldocontroller::class, 'edit_history'])->name('e.hsld');
     Route::post('/history-update/{id}', [saldocontroller::class, 'update_history'])->name('up.hsld');
     Route::get('/history-delete/{id}', [saldocontroller::class, 'delete_history'])->name('dlt.hsld');
+
+    Route::get('/total_material', [saldocontroller::class, 'index_total'])->name('mtl-total');
+    Route::get('/material_pengembalian', [saldocontroller::class, 'pengembalian'])->name('mtl-kembali');
+    Route::get('/print_mk', [saldocontroller::class, 'print_mk'])->name('mk-print');
+    Route::get('/print_tm', [saldocontroller::class, 'print_tm'])->name('tm-print');
+
+    Route::get('/psb-banyak', [TikettimController::class, 'ps_banyak'])->name('ps-b');
+    Route::get('/print-psb-banyak', [TikettimController::class, 'printps_banyak'])->name('printps-b');
+    Route::get('/psb-performance', [TikettimController::class, 'ps_pf'])->name('ps-pf');
+    Route::get('/print-performpsb', [TikettimController::class, 'print_pf'])->name('print-pf');
+    Route::get('/ggn-penyebab', [TikettimController::class, 'ggn_penyebab'])->name('gp');
+    Route::get('/print-ggn-penyebab', [TikettimController::class, 'print_gp'])->name('print-gp');
 });
 
 
@@ -199,8 +220,8 @@ Route::group(['middleware' => ['auth', 'CekRole:Master,Admin,Teknisi']], functio
     Route::get('/tiket_team', [TikettimController::class, 'index'])->name('tiket');
     Route::get('/tiket_team-tambah', [TikettimController::class, 'create'])->name('tbh.tiket');
     Route::post('/tiket_team-simpan', [TikettimController::class, 'store'])->name('spn.tiket');
-    Route::post('/tiket_team-update/{id}', [TikettimController::class, 'update'])->name('up.tiket');
-    Route::get('/tiket_team-edit/{id}', [TikettimController::class, 'edit'])->name('edt.tiket');
+    Route::post('/tiket_team-update/{id}/{bln}', [TikettimController::class, 'update'])->name('up.tiket');
+    Route::get('/tiket_team-edit/{id}/{bulan}', [TikettimController::class, 'edit'])->name('edt.tiket');
     Route::get('/tiket_team-dlt/{id}', [TikettimController::class, 'delete'])->name('dlt.tiket');
     Route::get('/tiket_team/search', [TikettimController::class, 'search'])->name('search.tiket');
 

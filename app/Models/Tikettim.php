@@ -28,9 +28,13 @@ class Tikettim extends Model
         'f_lokasi',
         'f_progress',
         'f_lap_tele',
+        'created_at',
     ];
 
-    
+    public function scopeByMonth($query, $year, $month)
+    {
+        return $query->whereYear('created_at', $year)->whereMonth('created_at', $month);
+    }
 
     public function scopeFilter($query, array $filters)
     {

@@ -9,7 +9,7 @@
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a href="{{ route('tiket') }}" class="text-reset fw-bold">
                 Rekap Tiket/</a></span> Edit Rekap Data Pekerjaan</h4>
     <div class="row justify-content-center">
-        <form action="{{ route('up.tiket', $tiktim->id) }}" method="POST" class="form-item" enctype="multipart/form-data">
+        <form action="{{ route('up.tiket', [$tiktim->id, $bln]) }}" method="POST" class="form-item" enctype="multipart/form-data">
             <div class="col-md-12">
                 @if (Session::has('error'))
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -147,6 +147,34 @@
                                 </div>
                             </div>
                         @endif
+                        @if (auth()->user()->jobdesk->detail_kerja == 3)
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-default-name">No Tiket</label>
+                            <div class="col col-sm">
+                                <input type="text" value="{{ $tiktim->no_tiket }}"
+                                    class="form-control  @error('no_tiket') is-invalid @enderror" name='no_tiket'
+                                    id="basic-default-name" placeholder="Masukkan No Tiket">
+                                @error('no_tiket')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan no tiket' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-default-name">Nama ODP / ODC</label>
+                            <div class="col-sm">
+                                <input type="text" value="{{ $tiktim->nama_pic }}"
+                                    class="form-control  @error('nama_pic') is-invalid @enderror" name='nama_pic'
+                                    id="basic-default-name" placeholder="Masukkan Nama Pelanggan">
+                                @error('nama_pic')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nama pelanggan' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        @else
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">No Tiket</label>
                             <div class="col col-sm">
@@ -219,6 +247,8 @@
                                 @enderror
                             </div>
                         </div>
+                        @endif
+                       
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Ket</label>
                             <div class="col-sm-10">

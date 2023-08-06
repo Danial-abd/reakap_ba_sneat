@@ -2,9 +2,6 @@
 <html lang="en">
 
 <head>
-    <title>
-        {{ $pdfname }}
-    </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <table style="width: 100%" class="align-middle">
@@ -29,12 +26,14 @@
 
 <body>
     <hr>
-    <br>
     <center>
         <h4>{{ $pdfname }}</h4>
     </center>
 
-    <p>Total Berita Acara Pertim</p><br>
+
+    Berikut Total Pengerjaan Tiket Dalam Sebulan </br>
+    Pada masing-masing tim
+
     <table style="width: 30%">
         <tr style="width: 25%">
             <th>Nama Tim</th>
@@ -42,7 +41,7 @@
             <th>Total</th>
         </tr>
         @foreach ($hitung as $hitung)
-            @if ($hitung->ba_count > 0)
+            @if ($hitung->tikettims_count > 0)
                 <tr>
                     <td>
                         {{ $hitung->list_tim }}</p>
@@ -51,42 +50,55 @@
                         :
                     </td>
                     <td style="text-align: center">
-                        {{ $hitung->ba_count ?? '' }}
+                        {{ $hitung->tikettims_count ?? '' }}
                     </td>
                 </tr>
             @endif
         @endforeach
     </table>
 
-<br>
+    <br>
+
 
     <div class="table-responsive">
-        <table class="table" >
-            <thead class="table-light">
-                <tr>
-                    <th>No</th>
-                    <th>Nama Tim</th>
-                    <th>No BA</th>
-                    <th>No Tiket</th>
-                    <th>Pekerjaan</th>
-                    <th>Tanggal Upload</th>
-                </tr>
-            </thead>
-                @php
-                    $no = 1;
-                @endphp
-            <tbody
-                @foreach ($rekap as $rk)
+        <table class="table table-bordered">
+            <tr>
+                <th>No</th>
+                <th>Tim</th>
+                <th>Sektor</th>
+                <th>Nama ODP / ODC</th>
+                <th>Pekerjaan</th>
+                <th>Ket</th>
+                <th>Tanggal Upload</th>
+            </tr>
+            @php
+                $no = 1;
+            @endphp
+            <tbody>
+                @foreach ($tiktim as $t)
                     <tr>
                         <td>{{ $no++ }}</td>
-                        <td>{{ $rk->beritaacara->teamdetail->teamlist->list_tim }}</td>
-                        <td>{{ $rk->beritaacara->no_ba }}</td>
-                        <td>{{ $rk->tikettim->no_tiket }}</td>
-                        <td>{{ $rk->tikettim->jenistiket->nama_tiket }}</td>
-                        <td>{{ $rk->created_at }}</td>
+                        <td>{{ $t->teamlist->list_tim }}</td>
+                        <td>
+                            @foreach ($t->teamdetail->teamlist->sektor as $tl)
+                                {{ $tl->sektor }}
+                            @endforeach
+                        </td>
+                        <td>{{ $t->nama_pic }}</td>
+                        <td>
+                            @foreach ($t->ggnpenyebab as $tg)
+                                @if ($tg->pivot->ket == null)
+                                    {{ $tg->penyebab }}
+                                @else
+                                    {{ $tg->pivot->ket }}
+                                @endif
+                            @endforeach
+                        </td>
+                        <td>{{ $t->ket }}</td>
+                        <td>{{ $t->updated_at }}</td>
                     </tr>
                 @endforeach
-                </tbody>
+            </tbody>
         </table>
     </div>
 

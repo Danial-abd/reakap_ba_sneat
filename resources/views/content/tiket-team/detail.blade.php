@@ -6,8 +6,20 @@
 
     {{-- <div class="container"> --}}
 
-    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a href="{{ route('psb') }}" class="text-reset fw-bold">
-                Tiket Pasaang Baru/</a></span> Detail Data Pasang Baru</h4>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a 
+        @if ($tiktim->id_j_tiket == 1)
+        href="{{ route('tiket-ggn') }}" class="text-reset fw-bold">Tiket Gangguan/
+        @endif
+        @if ($tiktim->id_j_tiket == 2)
+        href="{{ route('tiket-psb') }}" class="text-reset fw-bold">Tiket Pasang Baru/
+        @endif
+        @if ($tiktim->id_j_tiket == 3)
+        href="{{ route('tiket-mtn') }}" class="text-reset fw-bold">Tiket Maintenance/
+        @endif
+        
+        </a></span> 
+                {{$title}}
+            </h4>
     <div class="row justify-content-center">
         <form action="{{ route('up.detail', $tiktim->id) }}" method="POST" class="form-item" enctype="multipart/form-data">
             <div class="col-md-12">
@@ -38,48 +50,49 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @enderror
-
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5>History Update Status</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Status</th>
-                                        <th>Keterangan</th>
-                                        <th>Tanggal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $no = 1;
-                                    @endphp
-                                    @if ($histrev != null)
-                                        @forelse ($histrev as $his)
+                @if ($tiktim->id_j_tiket == 2)
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>History Update Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Status</th>
+                                            <th>Keterangan</th>
+                                            <th>Tanggal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $no = 1;
+                                        @endphp
+                                        @if ($histrev != null)
+                                            @forelse ($histrev as $his)
+                                                <tr>
+                                                    <td>{{ $no++ }}</td>
+                                                    <td>{{ $his->status }}</td>
+                                                    <td>{{ $his->ketrev }}</td>
+                                                    <td>{{ $his->created_at }}</td>
+                                                </tr>
+                                            @empty
+                                            @endforelse
+                                        @else
                                             <tr>
-                                                <td>{{ $no++ }}</td>
-                                                <td>{{ $his->status }}</td>
-                                                <td>{{ $his->ketrev }}</td>
-                                                <td>{{ $his->created_at }}</td>
+                                                <td class="align-middle" colspan="4" align="center">
+                                                    Data Kosong
+                                                </td>
                                             </tr>
-                                        @empty
-                                        @endforelse
-                                    @else
-                                    <tr>
-                                        <td class="align-middle" colspan="4" align="center">
-                                            Data Kosong
-                                        </td>
-                                    </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endif
 
                 <div class="card mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
@@ -88,6 +101,70 @@
                     <div class="card-body">
 
                         @csrf
+                        @if ($tiktim->id_j_tiket == 1)
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label">Penyebab Gangguan</label>
+                                <div class="col-sm-10">
+                                    <select name="id_ggn" id="ggn" onchange="showInputGgn()" class="form-control">
+                                        <option value="" disabled selected>--Pilih Penyebab--</option>
+                                        @foreach ($penyebab as $index => $penyebab)
+                                            @if ($index != 0)
+                                                <option value="{{ $penyebab->id }}"
+                                                    {{ $tiktim->ggnpenyebab->first()->id == $penyebab->id ? 'selected' : '' }}>
+                                                    {{ $penyebab->penyebab }}</option>
+                                            @endif
+                                        @endforeach
+
+                                        <option value="1"
+                                            {{ $tiktim->ggnpenyebab->first()->id == 1 ? 'selected' : '' }}>
+                                            {{ $penyebab->first()->penyebab }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3" id="inputGgn" style="display: none">
+                                <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                                <div class="col-sm">
+                                    <input type="text" value="{{ $tiktim->ggnpenyebab->first()->pivot->ket }}"
+                                        id="ket_ggn" class="form-control" name='ket_ggn' id="basic-default-name"
+                                        placeholder="Masukkan Penyebab Gangguan">
+                                </div>
+                            </div>
+                            @if ($tiktim->id_j_tiket == 1)
+                                @if ($tiktim->ggnpenyebab->first()->id == 1 )
+                                <div class="row mb-3" id="inputGgn">
+                                    <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                                    <div class="col-sm">
+                                        <input type="text" value="{{ $tiktim->ggnpenyebab->first()->pivot->ket }}"
+                                            id="ket_ggn" class="form-control" name='ket_ggn' id="basic-default-name"
+                                            placeholder="Masukkan Penyebab Gangguan">
+                                    </div>
+                                </div>
+                                @endif
+                            @endif
+                        @endif
+                        @if ($tiktim->id_j_tiket == 3)
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Pekerjaan</label>
+                            <div class="col-sm-10">
+                                <select name="id_ggn" id="ggn" class="form-control">
+                                    <option value="" disabled selected>--Pilih Pekerjaan--</option>
+                                    @foreach ($penyebab as $index => $penyebab)
+                                        <option value="{{ $penyebab->id }}" {{ $tiktim->ggnpenyebab->first()->id == $penyebab->id ? 'selected' : '' }}>{{ $penyebab->penyebab }}</option>
+                                    @endforeach
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3" id="inputGgn" style="display: none;">
+                            <label class="col-sm-2 col-form-label" for="ket_ggn">Lainnya</label>
+                            <div class="col-sm">
+                                <input type="text" id="ket_ggn" class="form-control" name='ket_ggn'
+                                    id="basic-default-name" placeholder="Masukkan Penyebab Gangguan">
+                            </div>
+                        </div>
+                    @endif
+
                         @if (auth()->user()->jobdesk->jobdesk == 'Teknisi')
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="basic-default-name">Nama Tim</label>
@@ -124,6 +201,32 @@
                                 </div> --}}
                             </div>
                         @endif
+                        @if ($tiktim->id_j_tiket == 3)
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">No Tiket</label>
+                            <div class="col col-sm">
+                                <input type="text" class="form-control  @error('no_tiket') is-invalid @enderror"
+                                    name='no_tiket' value="{{ $tiktim->no_tiket }}" placeholder="Masukkan No Tiket">
+                                @error('no_tiket')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan no tiket' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Nama ODP / ODC</label>
+                            <div class="col-sm">
+                                <input type="text" class="form-control  @error('nama_pic') is-invalid @enderror"
+                                    name='nama_pic' value="{{ $tiktim->nama_pic }}" placeholder="Masukkan Nama ODP / ODC">
+                                @error('nama_pic')
+                                    <div class="invalid-feedback">
+                                        {{ 'Harap isikan nama ODP' }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
+                        @else
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">No Tiket</label>
                             <div class="col col-sm">
@@ -183,6 +286,7 @@
                                 @enderror
                             </div>
                         </div>
+                        @endif
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Ket</label>
                             <div class="col-sm-10">
@@ -327,56 +431,70 @@
                                 <label class="btn btn-primary" for="btn-telegram"><span
                                         class="tf-icons bx bx-camera"></span></label>
                             </div>
-
                         </div>
-
-
-
-
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Status</label>
-                            <div class="col-sm">
-                                <select id="defaultSelect" name="status" class="form-select">
-                                    <option>-- Pilih --</option>
-                                    <option value="Revisi">Revisi</option>
-                                    <option value="Approved">Approve</option>
-                                </select>
-                                @error('status')
-                                    <div class="invalid-feedback">
-                                        {{ 'Harap isikan status pemeriksaan' }}
-                                    </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">No Pic</label>
-                            <div class="col-sm">
-                                <textarea name="ketrev" value="" id="alamat" class="form-control @error('ket') is-invalid @enderror"
-                                    cols="2" rows="3" placeholder="Masukkan Keterangan Pemeriksaan" style="resize : none"></textarea>
-                                @error('ket')
-                                    <div class="invalid-feedback">
-                                        {{ 'Harap isikan no pic' }}
-                                    </div>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row justify-content-between">
-                            <div class="col-sm-10 gap-3 d-flex">
-                                @if ($tiktim->status === 'Approved')
+                        @if ($tiktim->id_j_tiket == 1 || $tiktim->id_j_tiket == 3)
+                            <div class="row justify-content-between">
+                                <div class="col-sm-10 gap-3 d-flex">
                                     <button type="button" class="btn btn-secondary" disabled>Simpan</button>
-                                @else
-                                    <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
-                                @endif
-                                <a href="{{ route('tiket') }}" class="btn btn-outline-danger ">Batal</a>
+                                    @if ($tiktim->id_j_tiket == 1)
+                                    <a href="{{ route('tiket-ggn') }}" class="btn btn-outline-danger ">Kembali</a>
+                                    @endif
+                                    @if ($tiktim->id_j_tiket == 2)
+                                    <a href="{{ route('tiket-psb') }}" class="btn btn-outline-danger ">Kembali</a>
+                                    @endif
+                                    @if ($tiktim->id_j_tiket == 3)
+                                    <a href="{{ route('tiket-mtn') }}" class="btn btn-outline-danger ">Kembali</a>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                @if ($tiktim->id_j_tiket == 2)
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-name">Status</label>
+                                <div class="col-sm">
+                                    <select id="defaultSelect" name="status" class="form-select">
+                                        <option>-- Pilih --</option>
+                                        <option value="Revisi">Revisi</option>
+                                        <option value="Approved">Approve</option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">
+                                            {{ 'Harap isikan status pemeriksaan' }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="basic-default-name">No Pic</label>
+                                <div class="col-sm">
+                                    <textarea name="ketrev" value="" id="alamat" class="form-control @error('ket') is-invalid @enderror"
+                                        cols="2" rows="3" placeholder="Masukkan Keterangan Pemeriksaan" style="resize : none"></textarea>
+                                    @error('ket')
+                                        <div class="invalid-feedback">
+                                            {{ 'Harap isikan no pic' }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row justify-content-between">
+                                <div class="col-sm-10 gap-3 d-flex">
+                                    @if ($tiktim->status === 'Approved')
+                                        <button type="button" class="btn btn-secondary" disabled>Simpan</button>
+                                    @else
+                                        <button type="submit" class="btn btn-info" name="simpan">Simpan</button>
+                                    @endif
+                                    <a href="{{ route('tiket') }}" class="btn btn-outline-danger ">Batal</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endif
+
         </form>
     </div>
 
@@ -467,6 +585,18 @@
         //     }
 
         // });
+
+        function showInputGgn() {
+            var selectElement = document.getElementById('ggn');
+            var inputField = document.getElementById('inputGgn');
+
+            if (selectElement.value === '1') {
+                inputField.style.display = '';
+            } else {
+                // Sembunyikan inputField untuk opsi lainnya
+                inputField.style.display = 'none';
+            }
+        }
 
         function addmaterial() {
             // ++i;

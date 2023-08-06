@@ -14,7 +14,7 @@
                         Rekap Tiket
                     </h4>
                 </td>
-                
+
                 @if (auth()->user()->jobdesk->jobdesk == 'Master' || auth()->user()->jobdesk->jobdesk == 'Admin')
                     <form action="{{ route('print.tiket-psb') }}" method="get" target="_blank" class="form-item"
                         enctype="multipart/form-data">
@@ -127,6 +127,7 @@
                                     <th>Ket Tiket</th>
                                     <th>Ket Admin</th>
                                     <th>Tanggal Approve</th>
+                                    <th>Detail</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -144,14 +145,18 @@
                                             @endforeach
                                         </td>
                                         <td>{{ $t->no_tiket }}</td>
-                                        <td></td>
+                                        <td>{{ $t->no_inet }}</td>
                                         <td>{{ $t->nama_pic }}</td>
                                         <td>{{ $t->ket }}</td>
                                         <td>
                                             {{ $t->ketrev == null ? 'Menunggu Pengecekkan oleh admin' : $t->ketrev }}
                                         </td>
                                         <td>{{ $t->updated_at }}</td>
-                                        
+                                        <td>
+                                            <a href="{{ route('edt.detail', $t->id) }}" class="btn btn-sm btn-info"
+                                                title="Detail"><span class="bx bx-info-circle"></span></a>
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             </tbody>

@@ -35,18 +35,36 @@
                             $activeClass = null;
                             $currentRouteName = Route::currentRouteName();
                             
-                            if ($currentRouteName === $menu->slug) {
-                                $activeClass = 'active';
-                            } elseif (isset($menu->submenu)) {
-                                if (gettype($menu->slug) === 'array') {
-                                    foreach ($menu->slug as $slug) {
-                                        if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                            if (empty($nickname)) {
+                                if ($currentRouteName === $menu->slug) {
+                                    $activeClass = 'active';
+                                } elseif (isset($menu->submenu)) {
+                                    if (gettype($menu->slug) === 'array') {
+                                        foreach ($menu->slug as $slug) {
+                                            if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                                                $activeClass = 'active open';
+                                            }
+                                        }
+                                    } else {
+                                        if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
                                             $activeClass = 'active open';
                                         }
                                     }
-                                } else {
-                                    if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
-                                        $activeClass = 'active open';
+                                }
+                            } else {
+                                if ($currentRouteName === $menu->slug || $menu->slug == $nickname) {
+                                    $activeClass = 'active';
+                                } elseif (isset($menu->submenu)) {
+                                    if (gettype($menu->slug) === 'array') {
+                                        foreach ($menu->slug as $slug) {
+                                            if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                                                $activeClass = 'active open';
+                                            }
+                                        }
+                                    } else {
+                                        if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
+                                            $activeClass = 'active open';
+                                        }
                                     }
                                 }
                             }
@@ -98,18 +116,36 @@
                             $activeClass = null;
                             $currentRouteName = Route::currentRouteName();
                             
-                            if ($currentRouteName === $menu->slug) {
-                                $activeClass = 'active';
-                            } elseif (isset($menu->submenu)) {
-                                if (gettype($menu->slug) === 'array') {
-                                    foreach ($menu->slug as $slug) {
-                                        if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                            if (empty($nickname)) {
+                                if ($currentRouteName === $menu->slug) {
+                                    $activeClass = 'active';
+                                } elseif (isset($menu->submenu)) {
+                                    if (gettype($menu->slug) === 'array') {
+                                        foreach ($menu->slug as $slug) {
+                                            if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                                                $activeClass = 'active open';
+                                            }
+                                        }
+                                    } else {
+                                        if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
                                             $activeClass = 'active open';
                                         }
                                     }
-                                } else {
-                                    if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
-                                        $activeClass = 'active open';
+                                }
+                            } else {
+                                if ($currentRouteName === $menu->slug || $menu->slug == $nickname) {
+                                    $activeClass = 'active';
+                                } elseif (isset($menu->submenu)) {
+                                    if (gettype($menu->slug) === 'array') {
+                                        foreach ($menu->slug as $slug) {
+                                            if (str_contains($currentRouteName, $slug) and strpos($currentRouteName, $slug) === 0) {
+                                                $activeClass = 'active open';
+                                            }
+                                        }
+                                    } else {
+                                        if (str_contains($currentRouteName, $menu->slug) and strpos($currentRouteName, $menu->slug) === 0) {
+                                            $activeClass = 'active open';
+                                        }
                                     }
                                 }
                             }

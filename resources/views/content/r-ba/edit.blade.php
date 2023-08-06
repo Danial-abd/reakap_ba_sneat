@@ -33,7 +33,7 @@
                                 <select name="id_tiket" class="form-control">
                                     <option value="" disabled selected>--Pilih Tiket--</option>
                                     @foreach ($tikettim as $tik)
-                                        <option value="{{ $tik->id }}" {{$rekapba->id_tiket == $tik->id ? 'selected' : '' }}>Tiket : {{ $tik->tiketlist->no_tiket }},  Jenis Tiket : {{ $tik->tiketlist->jenistiket->nama_tiket }}, Tim : {{ $tik->teamdetail->teamlist->list_tim }}</option>
+                                        <option value="{{ $tik->id }}" {{$rekapba->id_tiket == $tik->id ? 'selected' : '' }}>Tiket : {{ $tik->no_tiket }},  Jenis Tiket : {{ $tik->jenistiket->nama_tiket }}, Tim : {{ $tik->teamdetail->teamlist->list_tim }}</option>
                                     @endforeach
                                 </select>
                             </div>
